@@ -65,7 +65,7 @@ echo -e "\t</property>" >> /home/vagrant/hadoop-2.6.0/etc/hadoop/yarn-site.xml
 echo "</configuration>" >> /home/vagrant/hadoop-2.6.0/etc/hadoop/yarn-site.xml
 
 echo "Y" | hdfs namenode -format
-/home/vagrant/hadoop-2.6.0/sbin/start-dfs.sh
+echo "yes" | /home/vagrant/hadoop-2.6.0/sbin/start-dfs.sh
 hdfs dfs -mkdir /user
 hdfs dfs -mkdir /user/vagrant
 hdfs dfs -mkdir /user/hive
