@@ -1,0 +1,295 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark \nimport org.elasticsearch.spark._\nimport org.apache.spark.sql.SQLContext\n\nval sqlContext \u003d new SQLContext(sc)",
+      "dateUpdated": "Jul 3, 2016 2:56:14 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467237358470_-1880024202",
+      "id": "20160629-215558_1809817186",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.elasticsearch.spark._\nimport org.apache.spark.sql.SQLContext\nsqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@6460766e\n"
+      },
+      "dateCreated": "Jun 29, 2016 9:55:58 PM",
+      "dateStarted": "Jul 3, 2016 2:56:14 PM",
+      "dateFinished": "Jul 3, 2016 2:56:17 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval elasticOptions \u003d Map(\n    \"es.mapping.id\" -\u003e \"id\",\n    \"es.nodes\" -\u003e \"localhost\",\n    \"es.port\" -\u003e \"9200\",\n    \"es.read.metadata\" -\u003e \"true\",\n    \"es.read.metadata.field\" -\u003e\"meta\"\n)\n \nval df \u003d sqlContext.read.format(\"org.elasticsearch.spark.sql\")\n    .options(elasticOptions)\n    .load(\"recommendations/user\")\n    \nval df2 \u003d df.filter($\"meta\".getField(\"_id\").equalTo(196)).select($\"count\",$\"rating\",$\"meta\".getField(\"_id\").alias(\"id\"))\n//val df2 \u003d df.select($\"count\",$\"rating\",$\"meta\".getField(\"_id\").alias(\"id\"))\ndf2.count()\ndf2.show()\ndf2.printSchema",
+      "dateUpdated": "Jul 3, 2016 2:56:17 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467237612190_-898946799",
+      "id": "20160629-220012_1196809251",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "elasticOptions: scala.collection.immutable.Map[String,String] \u003d Map(es.read.metadata.field -\u003e meta, es.mapping.id -\u003e id, es.port -\u003e 9200, es.read.metadata -\u003e true, es.nodes -\u003e localhost)\ndf: org.apache.spark.sql.DataFrame \u003d [count: bigint, rating: bigint, meta: map\u003cstring,string\u003e]\ndf2: org.apache.spark.sql.DataFrame \u003d [count: bigint, rating: bigint, id: string]\nres2: Long \u003d 1\n+-----+------+---+\n|count|rating| id|\n+-----+------+---+\n|    2|    15|196|\n+-----+------+---+\n\nroot\n |-- count: long (nullable \u003d true)\n |-- rating: long (nullable \u003d true)\n |-- id: string (nullable \u003d true)\n\n"
+      },
+      "dateCreated": "Jun 29, 2016 10:00:12 PM",
+      "dateStarted": "Jul 3, 2016 2:56:17 PM",
+      "dateFinished": "Jul 3, 2016 2:56:30 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \ncase class UserRating(id:Long,rating:Long,count:Long)\nval rating \u003d Row(196,242,3,881250949)\nval size \u003d df2.count\nvar row \u003d df2.rdd.first()\n\nvar result \u003d UserRating(row(2).toString.toLong,row(0).toString.toLong,1)\nif(size \u003d\u003d 1){\n    val count \u003d row(0).toString.toLong + 1L\n    val new_rating \u003d row(1).toString.toLong + rating(2).toString.toLong\n    val id \u003d rating(0).toString.toLong\n    result \u003d UserRating(id,new_rating,count)\n}\nresult\n",
+      "dateUpdated": "Jun 30, 2016 12:06:08 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467244303793_1612499143",
+      "id": "20160629-235143_242568281",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "defined class UserRating\nrating: org.apache.spark.sql.Row \u003d [196,242,3,881250949]\nsize: Long \u003d 1\nrow: org.apache.spark.sql.Row \u003d [2,15,196]\nresult: UserRating \u003d UserRating(196,2,1)\nres42: UserRating \u003d UserRating(196,18,3)\n"
+      },
+      "dateCreated": "Jun 29, 2016 11:51:43 PM",
+      "dateStarted": "Jun 30, 2016 12:06:08 AM",
+      "dateFinished": "Jun 30, 2016 12:06:10 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval newDf \u003d df.withColumn(\"count\",df(\"count\")+3)\n",
+      "dateUpdated": "Jun 29, 2016 10:50:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467238039238_-510308250",
+      "id": "20160629-220719_828477420",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "newDf: org.apache.spark.sql.DataFrame \u003d [count: bigint, rating: bigint, id: string]\n"
+      },
+      "dateCreated": "Jun 29, 2016 10:07:19 PM",
+      "dateStarted": "Jun 29, 2016 10:50:32 PM",
+      "dateFinished": "Jun 29, 2016 10:50:32 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport org.apache.spark.sql.SaveMode\nnewDf.write.format(\"org.elasticsearch.spark.sql\")\n    .mode(SaveMode.Append)\n    .options(elasticOptions)\n    .save(\"recommendations/user\")",
+      "dateUpdated": "Jun 29, 2016 10:50:34 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467238139726_1367017907",
+      "id": "20160629-220859_2056680725",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.SaveMode\n"
+      },
+      "dateCreated": "Jun 29, 2016 10:08:59 PM",
+      "dateStarted": "Jun 29, 2016 10:50:34 PM",
+      "dateFinished": "Jun 29, 2016 10:50:36 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport org.apache.spark.sql.Row\n\nval rating \u003d 10\nval count \u003d 2\nval id:Long \u003d 196L\nval script:String \u003d s\"\"\"{\\\"inline\\\":\\\"ctx._source.count +\u003d $count;ctx._source.rating +\u003d $rating;\\\"}\"\"\"\n\ncase class UpdateRating(id:Long,script:String)\n\nval df \u003d sc.parallelize(Array(UpdateRating(id,script))).toDF()\ndf.show()",
+      "dateUpdated": "Jul 3, 2016 3:29:44 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467558171166_-1570546264",
+      "id": "20160703-150251_811169776",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.Row\nrating: Int \u003d 10\ncount: Int \u003d 2\nid: Long \u003d 196\nscript: String \u003d {\"inline\":\"ctx._source.count +\u003d 2;ctx._source.rating +\u003d 10;\"}\ndefined class UpdateRating\ndf: org.apache.spark.sql.DataFrame \u003d [id: bigint, script: string]\n+---+--------------------+\n| id|              script|\n+---+--------------------+\n|196|{\"inline\":\"ctx._s...|\n+---+--------------------+\n\n"
+      },
+      "dateCreated": "Jul 3, 2016 3:02:51 PM",
+      "dateStarted": "Jul 3, 2016 3:29:44 PM",
+      "dateFinished": "Jul 3, 2016 3:29:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport org.apache.spark.sql.SaveMode\n\nval elasticOptions \u003d Map(\n    \"es.mapping.id\" -\u003e \"id\",\n    \"es.write.operation\" -\u003e \"upsert\",\n    \"es.update.script\" -\u003e \"\"\"{\"inline\":{}\"\"\",\n    \"es.mapping.exclude\" -\u003e \"script\",\n    \"es.nodes\" -\u003e \"localhost\",\n    \"es.port\" -\u003e \"9200\",\n    \"es.read.metadata\" -\u003e \"true\",\n    \"es.read.metadata.field\" -\u003e\"meta\"\n)\n\ndf.write.format(\"org.elasticsearch.spark.sql\")\n    .mode(SaveMode.Append)\n    .options(elasticOptions)\n    .save(\"recommendations/user\")",
+      "dateUpdated": "Jul 3, 2016 3:39:46 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467558719616_1670002730",
+      "id": "20160703-151159_600632350",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.SaveMode\nelasticOptions: scala.collection.immutable.Map[String,String] \u003d Map(es.update.script -\u003e {\"inline\":{}, es.read.metadata.field -\u003e meta, es.mapping.id -\u003e id, es.mapping.exclude -\u003e script, es.write.operation -\u003e upsert, es.port -\u003e 9200, es.read.metadata -\u003e true, es.nodes -\u003e localhost)\norg.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 23.0 failed 1 times, most recent failure: Lost task 0.0 in stage 23.0 (TID 30, localhost): org.apache.spark.util.TaskCompletionListenerException: Unexpected character (\u0027i\u0027 (code 105)): was expecting comma to separate OBJECT entries\n at [Source: [B@9acd85c; line: 1, column: 15]\n\tat org.apache.spark.TaskContextImpl.markTaskCompleted(TaskContextImpl.scala:87)\n\tat org.apache.spark.scheduler.Task.run(Task.scala:91)\n\tat org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:214)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)\n\tat java.lang.Thread.run(Thread.java:745)\n\nDriver stacktrace:\n\tat org.apache.spark.scheduler.DAGScheduler.org$apache$spark$scheduler$DAGScheduler$$failJobAndIndependentStages(DAGScheduler.scala:1431)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1419)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1418)\n\tat scala.collection.mutable.ResizableArray$class.foreach(ResizableArray.scala:59)\n\tat scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:47)\n\tat org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:1418)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:799)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:799)\n\tat scala.Option.foreach(Option.scala:236)\n\tat org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:799)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:1640)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1599)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1588)\n\tat org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:48)\n\tat org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:620)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1832)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1845)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1922)\n\tat org.elasticsearch.spark.sql.EsSparkSQL$.saveToEs(EsSparkSQL.scala:55)\n\tat org.elasticsearch.spark.sql.ElasticsearchRelation.insert(DefaultSource.scala:389)\n\tat org.elasticsearch.spark.sql.DefaultSource.createRelation(DefaultSource.scala:72)\n\tat org.apache.spark.sql.execution.datasources.ResolvedDataSource$.apply(ResolvedDataSource.scala:222)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:148)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:139)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:109)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:114)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:116)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:118)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:120)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:122)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:124)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:126)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:128)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:130)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:132)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:134)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:136)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:138)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:140)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:142)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:144)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:146)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:148)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:150)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:152)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:154)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:156)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:158)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:160)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:162)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:164)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:166)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:168)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:170)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:172)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:174)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:176)\n\tat $iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:178)\n\tat $iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:180)\n\tat $iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:182)\n\tat $iwC.\u003cinit\u003e(\u003cconsole\u003e:184)\n\tat \u003cinit\u003e(\u003cconsole\u003e:186)\n\tat .\u003cinit\u003e(\u003cconsole\u003e:190)\n\tat .\u003cclinit\u003e(\u003cconsole\u003e)\n\tat .\u003cinit\u003e(\u003cconsole\u003e:7)\n\tat .\u003cclinit\u003e(\u003cconsole\u003e)\n\tat $print(\u003cconsole\u003e)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:606)\n\tat org.apache.spark.repl.SparkIMain$ReadEvalPrint.call(SparkIMain.scala:1065)\n\tat org.apache.spark.repl.SparkIMain$Request.loadAndRun(SparkIMain.scala:1346)\n\tat org.apache.spark.repl.SparkIMain.loadAndRunReq$1(SparkIMain.scala:840)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:871)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:819)\n\tat org.apache.zeppelin.spark.SparkInterpreter.interpretInput(SparkInterpreter.java:810)\n\tat org.apache.zeppelin.spark.SparkInterpreter.interpret(SparkInterpreter.java:753)\n\tat org.apache.zeppelin.spark.SparkInterpreter.interpret(SparkInterpreter.java:746)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:94)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:341)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:176)\n\tat org.apache.zeppelin.scheduler.FIFOScheduler$1.run(FIFOScheduler.java:139)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:262)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:178)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:292)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)\n\tat java.lang.Thread.run(Thread.java:745)\nCaused by: org.apache.spark.util.TaskCompletionListenerException: Unexpected character (\u0027i\u0027 (code 105)): was expecting comma to separate OBJECT entries\n at [Source: [B@9acd85c; line: 1, column: 15]\n\tat org.apache.spark.TaskContextImpl.markTaskCompleted(TaskContextImpl.scala:87)\n\tat org.apache.spark.scheduler.Task.run(Task.scala:91)\n\tat org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:214)\n\t... 3 more\n\n"
+      },
+      "dateCreated": "Jul 3, 2016 3:11:59 PM",
+      "dateStarted": "Jul 3, 2016 3:39:46 PM",
+      "dateFinished": "Jul 3, 2016 3:39:47 PM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \ncurl -XPOST \u0027localhost:9200/recommendations/user/196/_update\u0027 -d \u0027{\n    \"script\" : {\n        \"inline\": \"ctx._source.count +\u003d count;ctx._source.rating +\u003drating;\",\n        \"params\" : {\n            \"count\" : 1,\n            \"rating\": 10\n        }\n    }\n}\u0027",
+      "dateUpdated": "Jul 3, 2016 2:56:52 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467240095847_-2045699380",
+      "id": "20160629-224135_1180414461",
+      "dateCreated": "Jun 29, 2016 10:41:35 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "read-write/Elastic Search",
+  "id": "2BRQ4ADE1",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

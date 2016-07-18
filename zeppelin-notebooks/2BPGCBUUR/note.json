@@ -1,0 +1,705 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n## Build Models\nWe need to build some models, generate some features, and give the PMML output to Engineering\n\nBuild 3 Models\n\n1. Linear Regression\n2. Random Forest Regression\n3. Feed Forward Neural Network",
+      "dateUpdated": "Jul 6, 2016 10:28:54 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822649280_-834635421",
+      "id": "20160706-163049_1890498023",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch2\u003eBuild Models\u003c/h2\u003e\n\u003cp\u003eWe need to build some models, generate some features, and give the PMML output to Engineering\u003c/p\u003e\n\u003cp\u003eBuild 3 Models\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003eLinear Regression\u003c/li\u003e\n\u003cli\u003eRandom Forest Regression\u003c/li\u003e\n\u003cli\u003eFeed Forward Neural Network\u003c/li\u003e\n\u003c/ol\u003e\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:30:49 PM",
+      "dateStarted": "Jul 6, 2016 10:28:55 PM",
+      "dateFinished": "Jul 6, 2016 10:28:56 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\nls -la",
+      "dateUpdated": "Jul 6, 2016 10:28:56 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467823221667_1703007980",
+      "id": "20160706-164021_1971129343",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "total 2560\ndrwxr-xr-x 1 vagrant vagrant     476 Jul  6 21:52 .\ndrwxr-xr-x 1 vagrant vagrant     374 Jul  6 15:44 ..\n-rw-r--r-- 1 vagrant vagrant     744 Jul  6 21:10 derby.log\ndrwxr-xr-x 1 vagrant vagrant     306 Jul  6 21:09 metastore_db\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 movies.parquet\n-rw-r--r-- 1 vagrant vagrant  345180 Jul  6 21:40 randomForestDebugString.txt\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:26 ratings_all.parquet\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:29 ratings_stream.parquet\n-rw-r--r-- 1 vagrant vagrant   16338 Jul  6 21:14 regression_model.xml\n-rw-r--r-- 1 vagrant vagrant    6953 Jul  6 21:52 sample_multiclass_classification_data.txt\n-rw-r----- 1 vagrant vagrant 1979173 Jul  6 15:44 u.data\n-rw-r----- 1 vagrant vagrant  236344 Jul  6 15:44 u.item\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 users.parquet\n-rw-r----- 1 vagrant vagrant   22628 Jul  6 15:44 u.user\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:40:21 PM",
+      "dateStarted": "Jul 6, 2016 10:28:57 PM",
+      "dateFinished": "Jul 6, 2016 10:28:58 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nimport org.apache.spark.sql.SQLContext\n\nval sqlContext \u003d new SQLContext(sc)\nval ratings \u003d sqlContext.read.parquet(\"ratings_all.parquet\")\nval movies \u003d sqlContext.read.parquet(\"movies.parquet\")\nval users \u003d sqlContext.read.parquet(\"users.parquet\")\nratings.registerTempTable(\"ratings\")\nmovies.registerTempTable(\"movies\")\nusers.registerTempTable(\"users\")\n",
+      "dateUpdated": "Jul 6, 2016 10:28:58 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822702647_1434906395",
+      "id": "20160706-163142_768847296",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.SQLContext\nsqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@6696bc2d\nratings: org.apache.spark.sql.DataFrame \u003d [userId: int, movieId: int, rating: int, timestamp: bigint]\nmovies: org.apache.spark.sql.DataFrame \u003d [movieId: int, title: string, releaseDate: string, videoDate: string, url: string, unknown: int, action: int, adventure: int, animation: int, children: int, comedy: int, crime: int, documentary: int, drama: int, fantasy: int, filmnoir: int, horror: int, musical: int, mystery: int, romance: int, scifi: int, thriller: int, war: int, western: int]\nusers: org.apache.spark.sql.DataFrame \u003d [id: int, age: int, gender: string, job: string, zipcode: string]\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:31:42 PM",
+      "dateStarted": "Jul 6, 2016 10:28:58 PM",
+      "dateFinished": "Jul 6, 2016 10:29:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n\nimport org.apache.spark.ml.feature.{VectorAssembler,OneHotEncoder,StringIndexer}\nimport org.apache.spark.ml.{Pipeline, PipelineModel}\nimport org.apache.spark.mllib.linalg.Vectors\n\nval ratingsByCategory \u003d sqlContext.sql(\"\"\"\nSELECT coalesce(actionRatings.action_count,0) as action_adventure_count, \n    coalesce(actionRatings.avg_action_rating,0) as avg_action_adventure_rating,\n    coalesce(adventureRatings.adventure_count,0) as drama_count, \n    coalesce(adventureRatings.avg_adventure_rating,0) as avg_drama_rating,\n    coalesce(comedyRatings.comedy_count,0) as comedy_count, \n    coalesce(comedyRatings.avg_comedy_rating,0) as avg_comedy_rating,\n    coalesce(horrorRatings.horror_count,0) as horror_count, \n    coalesce(horrorRatings.avg_horror_rating,0) as avg_horror_rating,\n    coalesce(animationRatings.animation_count,0) as animation_count, \n    coalesce(animationRatings.avg_animation_rating,0) as avg_animation_rating,\n    coalesce(warRatings.war_count,0) as war_count, \n    coalesce(warRatings.avg_war_rating,0) as avg_war_rating,\n    coalesce(romanceRatings.romance_count,0) as romance_count, \n    coalesce(romanceRatings.avg_romance_rating,0) as avg_romance_rating,\n    coalesce(scifiRatings.scifi_count,0) as scifi_count, \n    coalesce(scifiRatings.avg_scifi_rating,0) as avg_scifi_rating,\n    substring(users.zipcode,0,1) as zip1,\n    users.* \nFROM users\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as action_count,AVG(ratings.rating) as avg_action_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.action\u003d1 OR movies.adventure\u003d1\nGROUP BY ratings.userId) as actionRatings\nON actionRatings.userId\u003dusers.id\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as adventure_count,AVG(ratings.rating) as avg_adventure_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.crime\u003d1 OR movies.drama\u003d1 OR movies.mystery\u003d1\nGROUP BY ratings.userId) as adventureRatings\nON adventureRatings.userId\u003dusers.id\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as comedy_count,AVG(ratings.rating) as avg_comedy_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.comedy\u003d1\nGROUP BY ratings.userId) as comedyRatings\nON comedyRatings.userId\u003dusers.id\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as horror_count,AVG(ratings.rating) as avg_horror_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.horror\u003d1 OR movies.thriller\u003d1 OR movies.filmnoir\u003d1\nGROUP BY ratings.userId) as horrorRatings\nON horrorRatings.userId\u003dusers.id\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as animation_count,AVG(ratings.rating) as avg_animation_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.animation\u003d1 OR movies.children\u003d1\nGROUP BY ratings.userId) as animationRatings\nON animationRatings.userId\u003dusers.id\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as war_count,AVG(ratings.rating) as avg_war_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.war\u003d1 OR movies.western\u003d1\nGROUP BY ratings.userId) as warRatings\nON warRatings.userId\u003dusers.id\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as romance_count,AVG(ratings.rating) as avg_romance_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.romance\u003d1\nGROUP BY ratings.userId) as romanceRatings\nON romanceRatings.userId\u003dusers.id\nLEFT JOIN\n(SELECT ratings.userId,COUNT(*) as scifi_count,AVG(ratings.rating) as avg_scifi_rating\nFROM ratings \nJOIN movies \nON ratings.movieId\u003dmovies.movieId\nWHERE movies.scifi\u003d1\nGROUP BY ratings.userId) as scifiRatings\nON scifiRatings.userId\u003dusers.id\"\"\")\n\nval userCategoryVector \u003d new VectorAssembler()\n  .setInputCols(Array(\"action_adventure_count\",\"avg_action_adventure_rating\",\n                       \"drama_count\",\"avg_drama_rating\",\n                       \"comedy_count\",\"avg_comedy_rating\",\n                       \"animation_count\",\"avg_animation_rating\",\n                       \"war_count\",\"avg_war_rating\",\n                       \"romance_count\",\"avg_romance_rating\",\n                       \"scifi_count\",\"avg_scifi_rating\"))\n  .setOutputCol(\"userCategoryVector\")\n\nval genderIndexer \u003d new StringIndexer()\n  .setInputCol(\"gender\")\n  .setOutputCol(\"genderIndex\")\n  \nval jobIndexer \u003d new StringIndexer()\n    .setInputCol(\"job\")\n    .setOutputCol(\"jobIndex\")\n    \nval jobEncoder \u003d new OneHotEncoder()\n  .setInputCol(\"jobIndex\")\n  .setOutputCol(\"jobVec\")\n\nval zipcodeIndexer \u003d new StringIndexer()\n    .setInputCol(\"zip1\")\n    .setOutputCol(\"zipcodeIndex\")\n\nval zipEncoder \u003d new OneHotEncoder()\n  .setInputCol(\"zipcodeIndex\")\n  .setOutputCol(\"zipCodeVec\")\n\nval userVector \u003d new VectorAssembler()\n  .setInputCols(Array(\"genderIndex\", \"jobVec\",\"zipCodeVec\",\"userCategoryVector\"))\n  .setOutputCol(\"userFeatures\")\n\n    \nval userTransformer \u003d  new Pipeline()\n  .setStages(Array(userCategoryVector,genderIndexer, jobIndexer,jobEncoder,zipcodeIndexer,zipEncoder,userVector))\n  \nval newUser \u003d userTransformer.fit(ratingsByCategory).transform(ratingsByCategory).withColumn(\"userId\",$\"id\").select(\"userId\",\"userFeatures\")\n\n\n\nnewUser.show()\n",
+      "dateUpdated": "Jul 6, 2016 10:29:00 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467825564826_1933612657",
+      "id": "20160706-171924_1021858552",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}\nimport org.apache.spark.ml.{Pipeline, PipelineModel}\nimport org.apache.spark.mllib.linalg.Vectors\nratingsByCategory: org.apache.spark.sql.DataFrame \u003d [action_adventure_count: bigint, avg_action_adventure_rating: double, drama_count: bigint, avg_drama_rating: double, comedy_count: bigint, avg_comedy_rating: double, horror_count: bigint, avg_horror_rating: double, animation_count: bigint, avg_animation_rating: double, war_count: bigint, avg_war_rating: double, romance_count: bigint, avg_romance_rating: double, scifi_count: bigint, avg_scifi_rating: double, zip1: string, id: int, age: int, gender: string, job: string, zipcode: string]\nuserCategoryVector: org.apache.spark.ml.feature.VectorAssembler \u003d vecAssembler_5ea9d4da1b7b\ngenderIndexer: org.apache.spark.ml.feature.StringIndexer \u003d strIdx_042d3abd7917\njobIndexer: org.apache.spark.ml.feature.StringIndexer \u003d strIdx_53e2d27ac0fd\njobEncoder: org.apache.spark.ml.feature.OneHotEncoder \u003d oneHot_ebb7923fd793\nzipcodeIndexer: org.apache.spark.ml.feature.StringIndexer \u003d strIdx_0c374e59e44f\nzipEncoder: org.apache.spark.ml.feature.OneHotEncoder \u003d oneHot_75cb48884221\nuserVector: org.apache.spark.ml.feature.VectorAssembler \u003d vecAssembler_b68dc03a1ea4\nuserTransformer: org.apache.spark.ml.Pipeline \u003d pipeline_ca5b38d6c3cd\nnewUser: org.apache.spark.sql.DataFrame \u003d [userId: int, userFeatures: vector]\n+------+--------------------+\n|userId|        userFeatures|\n+------+--------------------+\n|    31|(53,[11,24,39,40,...|\n|   231|(53,[7,25,39,40,4...|\n|   431|(53,[13,21,39,40,...|\n|   631|(53,[0,1,29,39,40...|\n|   831|(53,[2,29,39,40,4...|\n|    32|(53,[0,1,28,39,40...|\n|   232|(53,[10,21,39,40,...|\n|   432|(53,[14,22,39,40,...|\n|   632|(53,[1,22,39,40,4...|\n|   832|(53,[12,28,39,40,...|\n|    33|(53,[1,23,39,40,4...|\n|   233|(53,[5,21,39,40,4...|\n|   433|(53,[11,24,39,40,...|\n|   633|(53,[6,22,39,40,4...|\n|   833|(53,[8,21,39,40,4...|\n|    34|(53,[0,4,27,39,40...|\n|   234|(53,[16,21,39,40,...|\n|   434|(53,[0,1,27,39,40...|\n|   634|(53,[5,34,39,40,4...|\n|   834|(53,[2,26,39,40,4...|\n+------+--------------------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 5:19:24 PM",
+      "dateStarted": "Jul 6, 2016 10:29:01 PM",
+      "dateFinished": "Jul 6, 2016 10:30:30 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval movieVector \u003d new VectorAssembler()\n  .setInputCols(Array(\"action\",\"adventure\",\"animation\",\"children\",\"comedy\",\n    \"crime\",\"documentary\",\"drama\",\"fantasy\",\"filmnoir\",\"horror\",\"musical\",\"mystery\",\"romance\",\"scifi\",\"thriller\",\"war\",\"western\"))\n  .setOutputCol(\"movieVector\")\n\nval movieTransformer \u003d new Pipeline()\n    .setStages(Array(movieVector))\n    \nval newMovies \u003d movieTransformer.fit(movies).transform(movies).select(\"movieId\",\"movieVector\")\nnewMovies.show()",
+      "dateUpdated": "Jul 6, 2016 10:29:04 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467835643750_1876673559",
+      "id": "20160706-200723_1618803962",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "movieVector: org.apache.spark.ml.feature.VectorAssembler \u003d vecAssembler_dd959e57d0fb\nmovieTransformer: org.apache.spark.ml.Pipeline \u003d pipeline_f9d40dab235a\nnewMovies: org.apache.spark.sql.DataFrame \u003d [movieId: int, movieVector: vector]\n+-------+--------------------+\n|movieId|         movieVector|\n+-------+--------------------+\n|      1|(18,[2,3,4],[1.0,...|\n|      2|(18,[0,1,15],[1.0...|\n|      3|     (18,[15],[1.0])|\n|      4|(18,[0,4,7],[1.0,...|\n|      5|(18,[5,7,15],[1.0...|\n|      6|      (18,[7],[1.0])|\n|      7|(18,[7,14],[1.0,1...|\n|      8|(18,[3,4,7],[1.0,...|\n|      9|      (18,[7],[1.0])|\n|     10|(18,[7,16],[1.0,1...|\n|     11|(18,[5,15],[1.0,1...|\n|     12|(18,[5,15],[1.0,1...|\n|     13|      (18,[4],[1.0])|\n|     14|(18,[7,13],[1.0,1...|\n|     15|      (18,[7],[1.0])|\n|     16|(18,[4,13],[1.0,1...|\n|     17|(18,[0,4,5,10,15]...|\n|     18|      (18,[7],[1.0])|\n|     19|      (18,[7],[1.0])|\n|     20|(18,[7,13],[1.0,1...|\n+-------+--------------------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 8:07:23 PM",
+      "dateStarted": "Jul 6, 2016 10:29:44 PM",
+      "dateFinished": "Jul 6, 2016 10:30:32 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval temp \u003d ratings.join(newMovies,\"movieId\").join(newUser,\"userId\").select(\"rating\",\"movieVector\",\"userFeatures\")\ntemp.show()",
+      "dateUpdated": "Jul 6, 2016 10:29:08 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467836421396_-958253215",
+      "id": "20160706-202021_906930355",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "temp: org.apache.spark.sql.DataFrame \u003d [rating: int, movieVector: vector, userFeatures: vector]\n+------+--------------------+--------------------+\n|rating|         movieVector|        userFeatures|\n+------+--------------------+--------------------+\n|     2|(18,[13,15],[1.0,...|(53,[11,24,39,40,...|\n|     5|(18,[9,12],[1.0,1...|(53,[11,24,39,40,...|\n|     2|(18,[10,12,15],[1...|(53,[11,24,39,40,...|\n|     4|(18,[5,9,12,15],[...|(53,[11,24,39,40,...|\n|     4|(18,[7,12,14,15],...|(53,[11,24,39,40,...|\n|     5|(18,[11,13],[1.0,...|(53,[11,24,39,40,...|\n|     5|(18,[5,7],[1.0,1.0])|(53,[11,24,39,40,...|\n|     4|(18,[0,1,13,16],[...|(53,[11,24,39,40,...|\n|     5|     (18,[12],[1.0])|(53,[11,24,39,40,...|\n|     4|      (18,[4],[1.0])|(53,[11,24,39,40,...|\n|     5|(18,[4,13],[1.0,1...|(53,[11,24,39,40,...|\n|     4|(18,[7,12],[1.0,1...|(53,[11,24,39,40,...|\n|     2|(18,[0,15],[1.0,1...|(53,[11,24,39,40,...|\n|     3|      (18,[7],[1.0])|(53,[11,24,39,40,...|\n|     3|(18,[7,13],[1.0,1...|(53,[11,24,39,40,...|\n|     5|      (18,[6],[1.0])|(53,[11,24,39,40,...|\n|     5|     (18,[14],[1.0])|(53,[11,24,39,40,...|\n|     4|(18,[4,13,15],[1....|(53,[11,24,39,40,...|\n|     4|(18,[7,13],[1.0,1...|(53,[11,24,39,40,...|\n|     4|(18,[4,11,13],[1....|(53,[11,24,39,40,...|\n+------+--------------------+--------------------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 8:20:21 PM",
+      "dateStarted": "Jul 6, 2016 10:30:30 PM",
+      "dateFinished": "Jul 6, 2016 10:30:46 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval dataVector \u003d new VectorAssembler()\n  .setInputCols(Array(\"movieVector\",\"userFeatures\"))\n  .setOutputCol(\"featureVector\")\n\nval transformer \u003d new Pipeline()\n    .setStages(Array(dataVector))\n    \nval data \u003d transformer.fit(temp).transform(temp).withColumn(\"rating2\",expr(\"CAST(rating AS DOUBLE)\")).drop(\"rating\").withColumnRenamed(\"rating2\", \"rating\").select(\"rating\",\"featureVector\").cache()\ndata.show()",
+      "dateUpdated": "Jul 6, 2016 10:29:10 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467823306140_-1366009758",
+      "id": "20160706-164146_1697191652",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "dataVector: org.apache.spark.ml.feature.VectorAssembler \u003d vecAssembler_ad2170f71e91\ntransformer: org.apache.spark.ml.Pipeline \u003d pipeline_fb10c81b473e\ndata: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector]\n+------+--------------------+\n|rating|       featureVector|\n+------+--------------------+\n|   2.0|(71,[13,15,29,42,...|\n|   5.0|(71,[9,12,29,42,5...|\n|   2.0|(71,[10,12,15,29,...|\n|   4.0|(71,[5,9,12,15,29...|\n|   4.0|(71,[7,12,14,15,2...|\n|   5.0|(71,[11,13,29,42,...|\n|   5.0|(71,[5,7,29,42,57...|\n|   4.0|(71,[0,1,13,16,29...|\n|   5.0|(71,[12,29,42,57,...|\n|   4.0|(71,[4,29,42,57,5...|\n|   5.0|(71,[4,13,29,42,5...|\n|   4.0|(71,[7,12,29,42,5...|\n|   2.0|(71,[0,15,29,42,5...|\n|   3.0|(71,[7,29,42,57,5...|\n|   3.0|(71,[7,13,29,42,5...|\n|   5.0|(71,[6,29,42,57,5...|\n|   5.0|(71,[14,29,42,57,...|\n|   4.0|(71,[4,13,15,29,4...|\n|   4.0|(71,[7,13,29,42,5...|\n|   4.0|(71,[4,11,13,29,4...|\n+------+--------------------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:41:46 PM",
+      "dateStarted": "Jul 6, 2016 10:30:33 PM",
+      "dateFinished": "Jul 6, 2016 10:30:59 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n# Model Building for PMML outputs",
+      "dateUpdated": "Jul 6, 2016 8:25:00 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467836681880_802528486",
+      "id": "20160706-202441_1003667892",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch1\u003eModel Building for PMML outputs\u003c/h1\u003e\n"
+      },
+      "dateCreated": "Jul 6, 2016 8:24:41 PM",
+      "dateStarted": "Jul 6, 2016 8:25:01 PM",
+      "dateFinished": "Jul 6, 2016 8:25:01 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport org.apache.spark.mllib.regression.LinearRegressionModel\nimport org.apache.spark.mllib.regression.LinearRegressionWithSGD\nimport org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.linalg.Vectors\nimport org.apache.spark.mllib.linalg.Vector\n\nval splits \u003d data.rdd.map({ case row \u003d\u003e LabeledPoint(row(0).toString.toDouble,row(1).asInstanceOf[Vector])}).randomSplit(Array(0.6,0.4),seed \u003d 1L)\nval train \u003d splits(0).cache()\nval test \u003d splits(1)\n\nval numIterations \u003d 10\nval stepSize \u003d 0.0001\nval model \u003d LinearRegressionWithSGD.train(train, numIterations, stepSize)\n",
+      "dateUpdated": "Jul 6, 2016 9:18:40 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 95.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467823437220_1947999440",
+      "id": "20160706-164357_1272979370",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.mllib.regression.LinearRegressionModel\nimport org.apache.spark.mllib.regression.LinearRegressionWithSGD\nimport org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.linalg.Vectors\nimport org.apache.spark.mllib.linalg.Vector\nsplits: Array[org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint]] \u003d Array(MapPartitionsRDD[970] at randomSplit at \u003cconsole\u003e:94, MapPartitionsRDD[971] at randomSplit at \u003cconsole\u003e:94)\ntrain: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d MapPartitionsRDD[970] at randomSplit at \u003cconsole\u003e:94\ntest: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d MapPartitionsRDD[971] at randomSplit at \u003cconsole\u003e:94\nnumIterations: Int \u003d 10\nstepSize: Double \u003d 1.0E-4\nmodel: org.apache.spark.mllib.regression.LinearRegressionModel \u003d org.apache.spark.mllib.regression.LinearRegressionModel: intercept \u003d 0.0, numFeatures \u003d 71\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:43:57 PM",
+      "dateStarted": "Jul 6, 2016 9:18:40 PM",
+      "dateFinished": "Jul 6, 2016 9:18:59 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n\nval valuesAndPreds  \u003d train.map({point \u003d\u003e\n    val prediction \u003d model.predict(point.features)\n    (point.label,prediction)\n})\nval MSE \u003d valuesAndPreds.map({case (v,p) \u003d\u003e math.pow((v-p),2)}).mean()\nprintln(\"RMSE Train \u003d \" + math.sqrt(MSE))\n\n\nval valuesAndPreds  \u003d test.map({point \u003d\u003e\n    val prediction \u003d model.predict(point.features)\n    (point.label,prediction)\n})\nval MSE \u003d valuesAndPreds.map({case (v,p) \u003d\u003e math.pow((v-p),2)}).mean()\nprintln(\"RMSE Test \u003d \" + math.sqrt(MSE))\n\n\n\n\n\n",
+      "dateUpdated": "Jul 6, 2016 9:11:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467823499363_828672945",
+      "id": "20160706-164459_1889149674",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "valuesAndPreds: org.apache.spark.rdd.RDD[(Double, Double)] \u003d MapPartitionsRDD[826] at map at \u003cconsole\u003e:89\nMSE: Double \u003d 5.321329876804433\nRMSE Train \u003d 2.3068007882789603\nvaluesAndPreds: org.apache.spark.rdd.RDD[(Double, Double)] \u003d MapPartitionsRDD[829] at map at \u003cconsole\u003e:91\nMSE: Double \u003d 5.306903556418469\nRMSE Test \u003d 2.303671755354584\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:44:59 PM",
+      "dateStarted": "Jul 6, 2016 9:11:41 PM",
+      "dateFinished": "Jul 6, 2016 9:11:50 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nmodel.toPMML(\"regression_model.xml\")",
+      "dateUpdated": "Jul 6, 2016 9:14:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467837902723_1064853904",
+      "id": "20160706-204502_1780741063",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Jul 6, 2016 8:45:02 PM",
+      "dateStarted": "Jul 6, 2016 9:14:41 PM",
+      "dateFinished": "Jul 6, 2016 9:14:42 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\nls -la",
+      "dateUpdated": "Jul 6, 2016 9:14:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467839670707_1635479959",
+      "id": "20160706-211430_1466221314",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "total 2212\ndrwxr-xr-x 1 vagrant vagrant     408 Jul  6 21:14 .\ndrwxr-xr-x 1 vagrant vagrant     374 Jul  6 15:44 ..\n-rw-r--r-- 1 vagrant vagrant     744 Jul  6 21:10 derby.log\ndrwxr-xr-x 1 vagrant vagrant     306 Jul  6 21:09 metastore_db\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 movies.parquet\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:26 ratings_all.parquet\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:29 ratings_stream.parquet\n-rw-r--r-- 1 vagrant vagrant   16338 Jul  6  2016 regression_model.xml\n-rw-r----- 1 vagrant vagrant 1979173 Jul  6 15:44 u.data\n-rw-r----- 1 vagrant vagrant  236344 Jul  6 15:44 u.item\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 users.parquet\n-rw-r----- 1 vagrant vagrant   22628 Jul  6 15:44 u.user\n"
+      },
+      "dateCreated": "Jul 6, 2016 9:14:30 PM",
+      "dateStarted": "Jul 6, 2016 9:14:42 PM",
+      "dateFinished": "Jul 6, 2016 9:14:43 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport org.apache.spark.ml.regression.DecisionTreeRegressor\nimport org.apache.spark.ml.regression.DecisionTreeRegressionModel\nimport org.apache.spark.ml.evaluation.RegressionEvaluator\nimport org.apache.spark.ml.regression.{RandomForestRegressionModel, RandomForestRegressor}\n\n// Split the data into training and test sets (30% held out for testing)\nval Array(trainingData, testData) \u003d data.randomSplit(Array(0.7, 0.3))\n\n// Train a DecisionTree model.\nval dt \u003d new RandomForestRegressor()\n  .setLabelCol(\"rating\")\n  .setFeaturesCol(\"featureVector\")\n  .setNumTrees(100)\n\n// Chain indexer and tree in a Pipeline\nval pipeline \u003d new Pipeline()\n  .setStages(Array(dt))\n\n// Train model.  This also runs the indexer.\nval model \u003d pipeline.fit(trainingData)\n\n// Make predictions.\nval predictions \u003d model.transform(testData)\n\n// Select example rows to display.\npredictions.select(\"prediction\", \"rating\", \"featureVector\").show(5)\n\n// Select (prediction, true label) and compute test error\nval evaluator \u003d new RegressionEvaluator()\n  .setLabelCol(\"rating\")\n  .setPredictionCol(\"prediction\")\n  .setMetricName(\"rmse\")\nval rmse \u003d evaluator.evaluate(predictions)\nprintln(\"Root Mean Squared Error (RMSE) on test data \u003d \" + rmse)\n",
+      "dateUpdated": "Jul 6, 2016 9:26:45 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467838051609_2069480899",
+      "id": "20160706-204731_1604722255",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.ml.regression.DecisionTreeRegressor\nimport org.apache.spark.ml.regression.DecisionTreeRegressionModel\nimport org.apache.spark.ml.evaluation.RegressionEvaluator\nimport org.apache.spark.ml.regression.{RandomForestRegressionModel, RandomForestRegressor}\ntrainingData: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector]\ntestData: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector]\ndt: org.apache.spark.ml.regression.RandomForestRegressor \u003d rfr_4c94e9bb7e77\npipeline: org.apache.spark.ml.Pipeline \u003d pipeline_3ad9dcb13761\nmodel: org.apache.spark.ml.PipelineModel \u003d pipeline_3ad9dcb13761\npredictions: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector, prediction: double]\n+------------------+------+--------------------+\n|        prediction|rating|       featureVector|\n+------------------+------+--------------------+\n| 3.319509924634043|   1.0|(71,[4,20,47,57,5...|\n|3.3255242905656774|   2.0|(71,[0,1,14,15,31...|\n|3.6697542941829737|   2.0|(71,[0,7,15,16,20...|\n| 3.499293975732507|   2.0|(71,[0,12,14,15,2...|\n| 3.491019085624503|   2.0|(71,[0,13,15,20,4...|\n+------------------+------+--------------------+\nonly showing top 5 rows\n\nevaluator: org.apache.spark.ml.evaluation.RegressionEvaluator \u003d regEval_481324a15030\nrmse: Double \u003d 1.0250732166052614\nRoot Mean Squared Error (RMSE) on test data \u003d 1.0250732166052614\n"
+      },
+      "dateCreated": "Jul 6, 2016 8:47:31 PM",
+      "dateStarted": "Jul 6, 2016 9:26:45 PM",
+      "dateFinished": "Jul 6, 2016 9:36:09 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh ",
+      "dateUpdated": "Jul 6, 2016 9:45:15 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467841515797_919064351",
+      "id": "20160706-214515_167462521",
+      "dateCreated": "Jul 6, 2016 9:45:15 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval rfModel \u003d model.stages(0).asInstanceOf[RandomForestRegressionModel]\nscala.tools.nsc.io.File(\"randomForestDebugString.txt\").writeAll(rfModel.toDebugString)",
+      "dateUpdated": "Jul 6, 2016 10:29:32 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467839691050_-397938760",
+      "id": "20160706-211451_1410863062",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import java.io.PrintWriter\nrfModel: org.apache.spark.ml.regression.RandomForestRegressionModel \u003d RandomForestRegressionModel (uid\u003drfr_e9a9ac85caa8) with 100 trees\n"
+      },
+      "dateCreated": "Jul 6, 2016 9:14:51 PM",
+      "dateStarted": "Jul 6, 2016 9:40:18 PM",
+      "dateFinished": "Jul 6, 2016 9:40:20 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh \nls -la\n",
+      "dateUpdated": "Jul 6, 2016 9:40:57 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467840092525_1827648093",
+      "id": "20160706-212132_591950202",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "total 2552\ndrwxr-xr-x 1 vagrant vagrant     442 Jul  6  2016 .\ndrwxr-xr-x 1 vagrant vagrant     374 Jul  6 15:44 ..\n-rw-r--r-- 1 vagrant vagrant     744 Jul  6 21:10 derby.log\ndrwxr-xr-x 1 vagrant vagrant     306 Jul  6 21:09 metastore_db\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 movies.parquet\n-rw-r--r-- 1 vagrant vagrant  345180 Jul  6 21:40 randomForestDebugString.txt\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:26 ratings_all.parquet\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:29 ratings_stream.parquet\n-rw-r--r-- 1 vagrant vagrant   16338 Jul  6 21:14 regression_model.xml\n-rw-r----- 1 vagrant vagrant 1979173 Jul  6 15:44 u.data\n-rw-r----- 1 vagrant vagrant  236344 Jul  6 15:44 u.item\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 users.parquet\n-rw-r----- 1 vagrant vagrant   22628 Jul  6 15:44 u.user\n"
+      },
+      "dateCreated": "Jul 6, 2016 9:21:32 PM",
+      "dateStarted": "Jul 6, 2016 9:40:57 PM",
+      "dateFinished": "Jul 6, 2016 9:40:57 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval data2 \u003d data.withColumn(\"rating2\",expr(\"rating-1\"))\ndata2.groupBy(\"rating2\").count().show()",
+      "dateUpdated": "Jul 6, 2016 10:29:29 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467841793396_-665520967",
+      "id": "20160706-214953_1370270273",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "data2: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector, rating2: double]\n+-------+-----+\n|rating2|count|\n+-------+-----+\n|    1.0|11370|\n|    3.0|34174|\n|    4.0|21201|\n|    0.0| 6110|\n|    2.0|27145|\n+-------+-----+\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 9:49:53 PM",
+      "dateStarted": "Jul 6, 2016 10:30:46 PM",
+      "dateFinished": "Jul 6, 2016 10:31:09 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nimport org.apache.spark.ml.classification.MultilayerPerceptronClassifier\nimport org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator\nimport org.apache.spark.ml.evaluation.RegressionEvaluator\n\nval splits \u003d data2.randomSplit(Array(0.7, 0.3), seed \u003d 1234L)\nval train \u003d splits(0).cache\nval test \u003d splits(1)\n// specify layers for the neural network:\n// input layer of size 4 (features), two intermediate of size 5 and 4\n// and output of size 3 (classes)\nval layers \u003d Array[Int](71,15,10,5)\n// create the trainer and set its parameters\nval trainer \u003d new MultilayerPerceptronClassifier()\n  .setLabelCol(\"rating2\")\n  .setPredictionCol(\"prediction\")\n  .setFeaturesCol(\"featureVector\")\n  .setLayers(layers)\n  .setBlockSize(128)\n  .setSeed(1234L)\n  .setMaxIter(10)\n  \n// train the model\nval model \u003d trainer.fit(train)\n// compute precision on the test set\nval result \u003d model.transform(test)\nval predictionAndLabels \u003d result.select(\"prediction\", \"rating2\")\nval evaluator \u003d new RegressionEvaluator()\n  .setLabelCol(\"rating2\")\n  .setPredictionCol(\"prediction\")\n  .setMetricName(\"rmse\")\n",
+      "dateUpdated": "Jul 6, 2016 10:37:06 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467841227836_-764762113",
+      "id": "20160706-214027_1931168388",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.ml.classification.MultilayerPerceptronClassifier\nimport org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator\nimport org.apache.spark.ml.evaluation.RegressionEvaluator\nsplits: Array[org.apache.spark.sql.DataFrame] \u003d Array([rating: double, featureVector: vector, rating2: double], [rating: double, featureVector: vector, rating2: double])\ntrain: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector, rating2: double]\ntest: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector, rating2: double]\nlayers: Array[Int] \u003d Array(71, 10, 5)\ntrainer: org.apache.spark.ml.classification.MultilayerPerceptronClassifier \u003d mlpc_f3f518bcaa1d\nmodel: org.apache.spark.ml.classification.MultilayerPerceptronClassificationModel \u003d mlpc_f3f518bcaa1d\nresult: org.apache.spark.sql.DataFrame \u003d [rating: double, featureVector: vector, rating2: double, prediction: double]\npredictionAndLabels: org.apache.spark.sql.DataFrame \u003d [prediction: double, rating2: double]\nevaluator: org.apache.spark.ml.evaluation.RegressionEvaluator \u003d regEval_c2e948f569a7\n\u003cconsole\u003e:42: error: not found: value predictions\n         val rmse \u003d evaluator.evaluate(predictions)\n                                       ^\n"
+      },
+      "dateCreated": "Jul 6, 2016 9:40:27 PM",
+      "dateStarted": "Jul 6, 2016 10:37:06 PM",
+      "dateFinished": "Jul 6, 2016 10:35:42 PM",
+      "status": "RUNNING",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval rmse \u003d evaluator.evaluate(predictionAndLabels)",
+      "dateUpdated": "Jul 7, 2016 2:43:56 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467841665005_1507576926",
+      "id": "20160706-214745_879478079",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "rmse: Double \u003d 1.8498685685049447\n"
+      },
+      "dateCreated": "Jul 6, 2016 9:47:45 PM",
+      "dateStarted": "Jul 7, 2016 2:43:56 PM",
+      "dateFinished": "Jul 6, 2016 10:36:23 PM",
+      "status": "PENDING",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \npredictionAndLabels.show(100)",
+      "dateUpdated": "Jul 7, 2016 2:44:02 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467842181362_1224149447",
+      "id": "20160706-215621_1452454314",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+----------+-------+\n|prediction|rating2|\n+----------+-------+\n|       4.0|    0.0|\n|       4.0|    0.0|\n|       4.0|    0.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    4.0|\n|       4.0|    0.0|\n|       4.0|    0.0|\n|       4.0|    0.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    1.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    2.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n|       4.0|    3.0|\n+----------+-------+\nonly showing top 100 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 9:56:21 PM",
+      "dateStarted": "Jul 6, 2016 10:36:41 PM",
+      "dateFinished": "Jul 6, 2016 10:36:43 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark ",
+      "dateUpdated": "Jul 6, 2016 10:36:41 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467844601127_773687274",
+      "id": "20160706-223641_515831626",
+      "dateCreated": "Jul 6, 2016 10:36:41 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "RecommendationEngine/SimpleModelsToPMML",
+  "id": "2BPGCBUUR",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

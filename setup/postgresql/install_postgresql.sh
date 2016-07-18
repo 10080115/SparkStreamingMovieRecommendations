@@ -11,3 +11,6 @@ sudo apt-get -y update
 sudo apt-get install -y postgresql-9.4
 #change password to 'password'
 sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'password';"
+
+sudo -u postgres psql -U postgres -d postgres -c "CREATE TABLE user_vectors (id Int, features jsonb);"
+sudo -u postgres psql -U postgres -d postgres -c "CREATE TABLE movie_vectors (id Int, features jsonb);"

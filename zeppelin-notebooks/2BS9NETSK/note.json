@@ -1,0 +1,99 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark \nimport org.apache.spark.sql.SQLContext\n\nval sqlContext \u003d new SQLContext(sc)\n",
+      "dateUpdated": "Jul 3, 2016 4:05:27 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467561883960_821739722",
+      "id": "20160703-160443_1393471894",
+      "dateCreated": "Jul 3, 2016 4:04:43 PM",
+      "dateStarted": "Jul 3, 2016 4:05:27 PM",
+      "status": "PENDING",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n\nsqlContext.sql(\"SELECT COUNT(*) as COUNT FROM ratings\").show()",
+      "dateUpdated": "Jul 3, 2016 4:05:45 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467561927108_1053819930",
+      "id": "20160703-160527_32233686",
+      "dateCreated": "Jul 3, 2016 4:05:27 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark ",
+      "dateUpdated": "Jul 3, 2016 4:05:45 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467561945618_-1588419333",
+      "id": "20160703-160545_1490179587",
+      "dateCreated": "Jul 3, 2016 4:05:45 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Read Running SQL",
+  "id": "2BS9NETSK",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

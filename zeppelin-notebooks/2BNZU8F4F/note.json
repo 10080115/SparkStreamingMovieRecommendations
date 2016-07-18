@@ -1,0 +1,157 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink\ncase class WordCount(word: String, frequency: Int) \nval bible:DataSet[String] \u003d env.readTextFile(\"10.txt.utf-8\") ",
+      "dateUpdated": "Jul 3, 2016 2:34:21 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467556230799_-179235112",
+      "id": "20160703-143030_1993991216",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "defined class WordCount\nbible: org.apache.flink.api.scala.DataSet[String] \u003d org.apache.flink.api.scala.DataSet@46d386ab\n"
+      },
+      "dateCreated": "Jul 3, 2016 2:30:30 PM",
+      "dateStarted": "Jul 3, 2016 2:34:21 PM",
+      "dateFinished": "Jul 3, 2016 2:34:38 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%flink\nval partialCounts: DataSet[WordCount] \u003d bible.flatMap{ \n    line \u003d\u003e \"\"\"\\b\\w+\\b\"\"\".r.findAllIn(line).map(word \u003d\u003e WordCount(word, 1)) \n    line.split(\" \").map(word \u003d\u003e WordCount(word, 1)) \n} ",
+      "dateUpdated": "Jul 3, 2016 2:34:50 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467556264281_398904567",
+      "id": "20160703-143104_526182456",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "partialCounts: org.apache.flink.api.scala.DataSet[WordCount] \u003d org.apache.flink.api.scala.DataSet@194115c9\n"
+      },
+      "dateCreated": "Jul 3, 2016 2:31:04 PM",
+      "dateStarted": "Jul 3, 2016 2:34:50 PM",
+      "dateFinished": "Jul 3, 2016 2:34:54 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%flink \nval wordCounts \u003d partialCounts.groupBy(\"word\").reduce{ (left, right) \u003d\u003e WordCount(left.word, left.frequency + right.frequency) }\nval result10 \u003d wordCounts.first(10).collect()",
+      "dateUpdated": "Jul 3, 2016 2:35:19 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467556490069_1679469855",
+      "id": "20160703-143450_817193944",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "wordCounts: org.apache.flink.api.scala.DataSet[WordCount] \u003d org.apache.flink.api.scala.DataSet@396352e\nresult10: Seq[WordCount] \u003d Buffer(WordCount(,27188), WordCount(\"Defects,\",1), WordCount(\"Information,1), WordCount(\"Plain,2), WordCount(\"Project,5), WordCount(\"Right,1), WordCount(#10],1), WordCount($5,000),1), WordCount(\u0027AS-IS\u0027,1), WordCount((\"the,1))\n"
+      },
+      "dateCreated": "Jul 3, 2016 2:34:50 PM",
+      "dateStarted": "Jul 3, 2016 2:35:19 PM",
+      "dateFinished": "Jul 3, 2016 2:35:25 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%flink \nr",
+      "dateUpdated": "Jul 3, 2016 2:36:37 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467556519421_1116813722",
+      "id": "20160703-143519_526498241",
+      "dateCreated": "Jul 3, 2016 2:35:19 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Flink",
+  "id": "2BNZU8F4F",
+  "lastReplName": {
+    "value": "flink"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

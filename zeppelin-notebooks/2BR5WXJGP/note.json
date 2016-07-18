@@ -1,0 +1,315 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark \nimport org.apache.spark.sql.SQLContext\n\nimport org.apache.spark.mllib.recommendation.ALS\nimport org.apache.spark.mllib.recommendation.MatrixFactorizationModel\nimport org.apache.spark.mllib.recommendation.Rating\n\nval sqlContext \u003d new SQLContext(sc)",
+      "dateUpdated": "Jul 7, 2016 8:01:26 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467921503864_-1734976982",
+      "id": "20160707-195823_1477994284",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.SQLContext\nimport org.apache.spark.mllib.recommendation.ALS\nimport org.apache.spark.mllib.recommendation.MatrixFactorizationModel\nimport org.apache.spark.mllib.recommendation.Rating\nsqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@4a09a442\n"
+      },
+      "dateCreated": "Jul 7, 2016 7:58:23 PM",
+      "dateStarted": "Jul 7, 2016 8:01:26 PM",
+      "dateFinished": "Jul 7, 2016 8:01:27 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\nls /vagrant/RecommendationEngine",
+      "dateUpdated": "Jul 7, 2016 8:00:51 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467921613908_2093860182",
+      "id": "20160707-200013_140990784",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "derby.log\nmetastore_db\nmovies.parquet\nrandomForestDebugString.txt\nratings_all.parquet\nratings_stream.parquet\nregression_model.xml\nsample_multiclass_classification_data.txt\nu.data\nu.item\nusers.parquet\nu.user\n"
+      },
+      "dateCreated": "Jul 7, 2016 8:00:13 PM",
+      "dateStarted": "Jul 7, 2016 8:00:52 PM",
+      "dateFinished": "Jul 7, 2016 8:00:52 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval raw_ratings \u003d sqlContext.read.parquet(\"/vagrant/RecommendationEngine/ratings_all.parquet\")\nval ratings \u003d raw_ratings.rdd.map(row \u003d\u003e Rating(row(0).toString.toInt,row(1).toString.toInt,row(2).toString.toDouble))\nratings.toDF.show",
+      "dateUpdated": "Jul 7, 2016 8:04:48 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467921611023_-472060881",
+      "id": "20160707-200011_1371042633",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "raw_ratings: org.apache.spark.sql.DataFrame \u003d [userId: int, movieId: int, rating: int, timestamp: bigint]\nratings: org.apache.spark.rdd.RDD[org.apache.spark.mllib.recommendation.Rating] \u003d MapPartitionsRDD[40] at map at \u003cconsole\u003e:58\n+----+-------+------+\n|user|product|rating|\n+----+-------+------+\n| 196|    242|   3.0|\n| 186|    302|   3.0|\n|  22|    377|   1.0|\n| 244|     51|   2.0|\n| 166|    346|   1.0|\n| 298|    474|   4.0|\n| 115|    265|   2.0|\n| 253|    465|   5.0|\n| 305|    451|   3.0|\n|   6|     86|   3.0|\n|  62|    257|   2.0|\n| 286|   1014|   5.0|\n| 200|    222|   5.0|\n| 210|     40|   3.0|\n| 224|     29|   3.0|\n| 303|    785|   3.0|\n| 122|    387|   5.0|\n| 194|    274|   2.0|\n| 291|   1042|   4.0|\n| 234|   1184|   2.0|\n+----+-------+------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 7, 2016 8:00:11 PM",
+      "dateStarted": "Jul 7, 2016 8:04:48 PM",
+      "dateFinished": "Jul 7, 2016 8:04:50 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval rank \u003d 10\nval numIterations \u003d 10\nval model \u003d ALS.train(ratings, rank, numIterations, 0.01)\n",
+      "dateUpdated": "Jul 7, 2016 8:04:52 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467921856762_493025633",
+      "id": "20160707-200416_980386014",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "rank: Int \u003d 10\nnumIterations: Int \u003d 10\nmodel: org.apache.spark.mllib.recommendation.MatrixFactorizationModel \u003d org.apache.spark.mllib.recommendation.MatrixFactorizationModel@49c88194\n"
+      },
+      "dateCreated": "Jul 7, 2016 8:04:16 PM",
+      "dateStarted": "Jul 7, 2016 8:04:52 PM",
+      "dateFinished": "Jul 7, 2016 8:04:58 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval usersProducts \u003d ratings.map { case Rating(user, product, rate) \u003d\u003e\n  (user, product)\n}\nval predictions \u003d\n  model.predict(usersProducts).map { case Rating(user, product, rate) \u003d\u003e\n    ((user, product), rate)\n  }\nval ratesAndPreds \u003d ratings.map { case Rating(user, product, rate) \u003d\u003e\n  ((user, product), rate)\n}.join(predictions)\nval MSE \u003d ratesAndPreds.map { case ((user, product), (r1, r2)) \u003d\u003e\n  val err \u003d (r1 - r2)\n  err * err\n}.mean()\nprintln(\"Mean Squared Error \u003d \" + MSE)",
+      "dateUpdated": "Jul 7, 2016 8:05:24 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467921921346_-1185341014",
+      "id": "20160707-200521_1404024935",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "usersProducts: org.apache.spark.rdd.RDD[(Int, Int)] \u003d MapPartitionsRDD[250] at map at \u003cconsole\u003e:60\npredictions: org.apache.spark.rdd.RDD[((Int, Int), Double)] \u003d MapPartitionsRDD[259] at map at \u003cconsole\u003e:69\nratesAndPreds: org.apache.spark.rdd.RDD[((Int, Int), (Double, Double))] \u003d MapPartitionsRDD[263] at join at \u003cconsole\u003e:72\nMSE: Double \u003d 0.48269851013324827\nMean Squared Error \u003d 0.48269851013324827\n"
+      },
+      "dateCreated": "Jul 7, 2016 8:05:21 PM",
+      "dateStarted": "Jul 7, 2016 8:05:24 PM",
+      "dateFinished": "Jul 7, 2016 8:05:30 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport java.util.Properties\nimport org.apache.spark.sql.SaveMode\n\nval dbProperties \u003d new Properties\ndbProperties.setProperty(\"user\",\"postgres\")\ndbProperties.setProperty(\"password\",\"purple\")\n\ncase class ALSFeature(id:Int,features:String)\n\ndef mapALSFeatures(id:Int,array:Array[Double]):ALSFeature \u003d {\n    var jsonString:String \u003d \"{\"\n    for ( i \u003c- 0 to (array.length - 1)) {\n        var temp \u003d \"\\\"\"+i.toString+\"\\\"\"\n        temp \u003d temp + \":\"\n        temp \u003d temp + \"\\\"\" + array(i).toString + \"\\\"\"\n        jsonString \u003d jsonString + temp\n        if (i \u003c (array.length-1)) jsonString \u003d jsonString + \",\"\n    }\n    jsonString \u003d jsonString + \"}\"\n    ALSFeature(id,jsonString)\n}\n\nvar jsonDF \u003d model.productFeatures.map({case (id,array) \u003d\u003e mapALSFeatures(id,array)}).toDF()\njsonDF.write.mode(SaveMode.Overwrite).jdbc(\"jdbc:postgresql://localhost:5432/\",\"public.movie_vectors\",dbProperties)\njsonDF \u003d model.userFeatures.map({case (id,array) \u003d\u003e mapALSFeatures(id,array)}).toDF()\njsonDF.write.mode(SaveMode.Overwrite).jdbc(\"jdbc:postgresql://localhost:5432/\",\"public.user_vectors\",dbProperties)",
+      "dateUpdated": "Jul 7, 2016 8:42:40 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467921601076_1592886465",
+      "id": "20160707-200001_280010584",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import java.util.Properties\nimport org.apache.spark.sql.SaveMode\ndbProperties: java.util.Properties \u003d {}\nres71: Object \u003d null\nres72: Object \u003d null\ndefined class ALSFeature\nmapALSFeatures: (id: Int, array: Array[Double])ALSFeature\njsonDF: org.apache.spark.sql.DataFrame \u003d [id: int, features: string]\njsonDF: org.apache.spark.sql.DataFrame \u003d [id: int, features: string]\n"
+      },
+      "dateCreated": "Jul 7, 2016 8:00:01 PM",
+      "dateStarted": "Jul 7, 2016 8:42:40 PM",
+      "dateFinished": "Jul 7, 2016 8:42:42 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n",
+      "dateUpdated": "Jul 7, 2016 8:42:44 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467921943535_585520255",
+      "id": "20160707-200543_1026554452",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import java.util.Properties\nimport org.apache.spark.sql.SaveMode\ndbProperties: java.util.Properties \u003d {}\nres58: Object \u003d null\nres59: Object \u003d null\n"
+      },
+      "dateCreated": "Jul 7, 2016 8:05:43 PM",
+      "dateStarted": "Jul 7, 2016 8:27:05 PM",
+      "dateFinished": "Jul 7, 2016 8:27:07 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n",
+      "dateUpdated": "Jul 7, 2016 8:36:40 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467923054345_416268784",
+      "id": "20160707-202414_1410483974",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "defined class ALSFeature\nmapALSFeatures: (id: Int, array: Array[Double])ALSFeature\njsonDF: org.apache.spark.sql.DataFrame \u003d [id: int, features: string]\njsonDF: org.apache.spark.sql.DataFrame \u003d [id: int, features: string]\n"
+      },
+      "dateCreated": "Jul 7, 2016 8:24:14 PM",
+      "dateStarted": "Jul 7, 2016 8:36:13 PM",
+      "dateFinished": "Jul 7, 2016 8:36:15 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark ",
+      "dateUpdated": "Jul 7, 2016 8:29:20 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467923360250_-60775524",
+      "id": "20160707-202920_1970988356",
+      "dateCreated": "Jul 7, 2016 8:29:20 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "RecommendationEngine/ALStoPostgreSQL",
+  "id": "2BR5WXJGP",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

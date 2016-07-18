@@ -1,0 +1,641 @@
+{
+  "paragraphs": [
+    {
+      "text": "import org.apache.spark.rdd.RDD\nimport org.apache.spark.mllib.linalg.{Vector,Vectors,Matrix,DenseMatrix,DenseVector}\nimport org.apache.spark.mllib.linalg.distributed.{IndexedRow, IndexedRowMatrix, RowMatrix}\nimport breeze.linalg.{diag,DenseVector \u003d\u003e BDV, SparseVector \u003d\u003e BSV, Vector \u003d\u003e BV, DenseMatrix \u003d\u003e BDM, CSCMatrix \u003d\u003e BSM, Matrix \u003d\u003e BM}\n\nval ratings \u003d sc.textFile(\"/Users/bsmith/Desktop/MovieRecommendations/ml-100k/u.data\").map({line \u003d\u003e \n    val cols \u003d line.split(\"\\t\")\n    (cols(0).toLong,cols(1).toInt,cols(2).toDouble)\n})\nratings.first()\n\nval movieCount \u003d ratings.map({case (users_id,movie_id,rating) \u003d\u003e movie_id}).distinct.count.toInt",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "lineNumbers": true,
+        "enabled": true,
+        "tableHide": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": false,
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042122_1627120419",
+      "id": "20160618-151918_1145963262",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.rdd.RDD\nimport org.apache.spark.mllib.linalg.{Vector, Vectors, Matrix, DenseMatrix, DenseVector}\nimport org.apache.spark.mllib.linalg.distributed.{IndexedRow, IndexedRowMatrix, RowMatrix}\nimport breeze.linalg.{diag, DenseVector\u003d\u003eBDV, SparseVector\u003d\u003eBSV, Vector\u003d\u003eBV, DenseMatrix\u003d\u003eBDM, CSCMatrix\u003d\u003eBSM, Matrix\u003d\u003eBM}\nratings: org.apache.spark.rdd.RDD[(Long, Int, Double)] \u003d MapPartitionsRDD[660] at map at \u003cconsole\u003e:46\nres182: (Long, Int, Double) \u003d (196,242,3.0)\nmovieCount: Int \u003d 1682\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import scala.math.sqrt\nval normalization \u003d ratings.map({case (user_id,movie_id,rating) \u003d\u003e (user_id,Array(rating))}).reduceByKey({case(first,second) \u003d\u003e first ++ second}).map({case(user_id,ratings) \u003d\u003e \n    var count:Int \u003d  0\n    var total:Double  \u003d 0\n    var squareTotal:Double \u003d 0\n    while (count \u003c ratings.length) {\n        total \u003d total + ratings(count)\n        squareTotal \u003d squareTotal + ratings(count)*ratings(count)\n        count +\u003d 1\n    }\n    val avg \u003d total/count\n    val squareAvg \u003d squareTotal/count\n    val std \u003d sqrt(squareAvg-avg*avg)\n    (user_id,(count,avg,std))\n})\nval norm_ratings \u003d ratings.map({case (user_id,movie_id,rating) \u003d\u003e (user_id,(movie_id,rating))}).join(normalization)\n    .map({case(user_id,((movie_id,rating),(count,avg,std))) \u003d\u003e\n        (user_id,movie_id,(rating-avg)/std)\n    })",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042122_1627120419",
+      "id": "20160618-151921_3161995",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import scala.math.sqrt\nnormalization: org.apache.spark.rdd.RDD[(Long, (Int, Double, Double))] \u003d MapPartitionsRDD[757] at map at \u003cconsole\u003e:95\nnorm_ratings: org.apache.spark.rdd.RDD[(Long, Int, Double)] \u003d MapPartitionsRDD[762] at map at \u003cconsole\u003e:98\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val rows:RDD[IndexedRow] \u003d norm_ratings.map({case (user_id,movie_id,rating) \u003d\u003e (user_id,Array((movie_id,rating)))}).reduceByKey({case(first,second) \u003d\u003e first ++ second})\n   .map({case(user_id,array) \u003d\u003e \n        val indexes \u003d array.map({case (i,v) \u003d\u003e i})\n        val values \u003d array.map({case (i,v) \u003d\u003e v})\n        IndexedRow(user_id,Vectors.sparse(movieCount+1,indexes,values).toDense)\n   })\nval mat: IndexedRowMatrix \u003d new IndexedRowMatrix(rows)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042122_1627120419",
+      "id": "20160618-152032_975224977",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "rows: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.distributed.IndexedRow] \u003d MapPartitionsRDD[1523] at map at \u003cconsole\u003e:125\nmat: org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix \u003d org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix@36ec820e\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val m \u003d mat.numRows\nval n \u003d mat.numCols",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042122_1627120419",
+      "id": "20160618-152959_114472176",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "m: Long \u003d 944\nn: Long \u003d 1683\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.mllib.linalg.SingularValueDecomposition\n\nval svd: SingularValueDecomposition[IndexedRowMatrix, Matrix] \u003d mat.computeSVD(2, computeU \u003d true)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042123_1626735670",
+      "id": "20160618-154803_117048466",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.mllib.linalg.SingularValueDecomposition\norg.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 4899.0 failed 1 times, most recent failure: Lost task 0.0 in stage 4899.0 (TID 2905, localhost): java.lang.ArrayIndexOutOfBoundsException: 1682\n\tat org.apache.spark.mllib.linalg.SparseVector.toArray(Vectors.scala:728)\n\tat org.apache.spark.mllib.linalg.Vector$class.toDense(Vectors.scala:155)\n\tat org.apache.spark.mllib.linalg.SparseVector.toDense(Vectors.scala:708)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$2bb262145019aec0d7df1b6685a6d4ff$$$$$iwC$$iwC$$iwC$$iwC$$anonfun$3.apply(\u003cconsole\u003e:128)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$2bb262145019aec0d7df1b6685a6d4ff$$$$$iwC$$iwC$$iwC$$iwC$$anonfun$3.apply(\u003cconsole\u003e:125)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$class.foreach(Iterator.scala:727)\n\tat scala.collection.AbstractIterator.foreach(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.foldLeft(TraversableOnce.scala:144)\n\tat scala.collection.AbstractIterator.foldLeft(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.aggregate(TraversableOnce.scala:201)\n\tat scala.collection.AbstractIterator.aggregate(Iterator.scala:1157)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$23.apply(RDD.scala:1135)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$23.apply(RDD.scala:1135)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$24.apply(RDD.scala:1136)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$24.apply(RDD.scala:1136)\n\tat org.apache.spark.rdd.RDD$$anonfun$mapPartitions$1$$anonfun$apply$20.apply(RDD.scala:710)\n\tat org.apache.spark.rdd.RDD$$anonfun$mapPartitions$1$$anonfun$apply$20.apply(RDD.scala:710)\n\tat org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:38)\n\tat org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:306)\n\tat org.apache.spark.rdd.RDD.iterator(RDD.scala:270)\n\tat org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:66)\n\tat org.apache.spark.scheduler.Task.run(Task.scala:89)\n\tat org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:214)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)\n\tat java.lang.Thread.run(Thread.java:745)\n\nDriver stacktrace:\n\tat org.apache.spark.scheduler.DAGScheduler.org$apache$spark$scheduler$DAGScheduler$$failJobAndIndependentStages(DAGScheduler.scala:1431)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1419)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1418)\n\tat scala.collection.mutable.ResizableArray$class.foreach(ResizableArray.scala:59)\n\tat scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:47)\n\tat org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:1418)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:799)\n\tat org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:799)\n\tat scala.Option.foreach(Option.scala:236)\n\tat org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:799)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:1640)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1599)\n\tat org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:1588)\n\tat org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:48)\n\tat org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:620)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1832)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1952)\n\tat org.apache.spark.rdd.RDD$$anonfun$reduce$1.apply(RDD.scala:1025)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:150)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:111)\n\tat org.apache.spark.rdd.RDD.withScope(RDD.scala:316)\n\tat org.apache.spark.rdd.RDD.reduce(RDD.scala:1007)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1.apply(RDD.scala:1150)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:150)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:111)\n\tat org.apache.spark.rdd.RDD.withScope(RDD.scala:316)\n\tat org.apache.spark.rdd.RDD.treeAggregate(RDD.scala:1127)\n\tat org.apache.spark.mllib.linalg.distributed.RowMatrix.multiplyGramianMatrixBy(RowMatrix.scala:93)\n\tat org.apache.spark.mllib.linalg.distributed.RowMatrix$$anonfun$15.apply(RowMatrix.scala:267)\n\tat org.apache.spark.mllib.linalg.distributed.RowMatrix$$anonfun$15.apply(RowMatrix.scala:267)\n\tat org.apache.spark.mllib.linalg.EigenValueDecomposition$.symmetricEigs(EigenValueDecomposition.scala:106)\n\tat org.apache.spark.mllib.linalg.distributed.RowMatrix.computeSVD(RowMatrix.scala:267)\n\tat org.apache.spark.mllib.linalg.distributed.RowMatrix.computeSVD(RowMatrix.scala:193)\n\tat org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix.computeSVD(IndexedRowMatrix.scala:163)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:130)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:135)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:137)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:139)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$ad149dbdbd963d0c9dc9b1d6f07f5e$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:141)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:143)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:145)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:147)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:149)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$6e49527b15a75f3b188beeb1837a4f1$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:151)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:153)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:155)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:157)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:159)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:161)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:163)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:165)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:167)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:169)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:171)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:173)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:175)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:177)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:179)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:181)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:183)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:185)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:187)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:189)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:191)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:193)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:195)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:197)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:199)\n\tat $iwC$$iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:201)\n\tat $iwC$$iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:203)\n\tat $iwC$$iwC.\u003cinit\u003e(\u003cconsole\u003e:205)\n\tat $iwC.\u003cinit\u003e(\u003cconsole\u003e:207)\n\tat \u003cinit\u003e(\u003cconsole\u003e:209)\n\tat .\u003cinit\u003e(\u003cconsole\u003e:213)\n\tat .\u003cclinit\u003e(\u003cconsole\u003e)\n\tat .\u003cinit\u003e(\u003cconsole\u003e:7)\n\tat .\u003cclinit\u003e(\u003cconsole\u003e)\n\tat $print(\u003cconsole\u003e)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:606)\n\tat org.apache.spark.repl.SparkIMain$ReadEvalPrint.call(SparkIMain.scala:1065)\n\tat org.apache.spark.repl.SparkIMain$Request.loadAndRun(SparkIMain.scala:1346)\n\tat org.apache.spark.repl.SparkIMain.loadAndRunReq$1(SparkIMain.scala:840)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:871)\n\tat org.apache.spark.repl.SparkIMain.interpret(SparkIMain.scala:819)\n\tat org.apache.zeppelin.spark.SparkInterpreter.interpretInput(SparkInterpreter.java:804)\n\tat org.apache.zeppelin.spark.SparkInterpreter.interpret(SparkInterpreter.java:747)\n\tat org.apache.zeppelin.spark.SparkInterpreter.interpret(SparkInterpreter.java:740)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:94)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:341)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:176)\n\tat org.apache.zeppelin.scheduler.FIFOScheduler$1.run(FIFOScheduler.java:139)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:262)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:178)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:292)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)\n\tat java.lang.Thread.run(Thread.java:745)\nCaused by: java.lang.ArrayIndexOutOfBoundsException: 1682\n\tat org.apache.spark.mllib.linalg.SparseVector.toArray(Vectors.scala:728)\n\tat org.apache.spark.mllib.linalg.Vector$class.toDense(Vectors.scala:155)\n\tat org.apache.spark.mllib.linalg.SparseVector.toDense(Vectors.scala:708)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$2bb262145019aec0d7df1b6685a6d4ff$$$$$iwC$$iwC$$iwC$$iwC$$anonfun$3.apply(\u003cconsole\u003e:128)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$2bb262145019aec0d7df1b6685a6d4ff$$$$$iwC$$iwC$$iwC$$iwC$$anonfun$3.apply(\u003cconsole\u003e:125)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$$anon$11.next(Iterator.scala:328)\n\tat scala.collection.Iterator$class.foreach(Iterator.scala:727)\n\tat scala.collection.AbstractIterator.foreach(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.foldLeft(TraversableOnce.scala:144)\n\tat scala.collection.AbstractIterator.foldLeft(Iterator.scala:1157)\n\tat scala.collection.TraversableOnce$class.aggregate(TraversableOnce.scala:201)\n\tat scala.collection.AbstractIterator.aggregate(Iterator.scala:1157)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$23.apply(RDD.scala:1135)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$23.apply(RDD.scala:1135)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$24.apply(RDD.scala:1136)\n\tat org.apache.spark.rdd.RDD$$anonfun$treeAggregate$1$$anonfun$24.apply(RDD.scala:1136)\n\tat org.apache.spark.rdd.RDD$$anonfun$mapPartitions$1$$anonfun$apply$20.apply(RDD.scala:710)\n\tat org.apache.spark.rdd.RDD$$anonfun$mapPartitions$1$$anonfun$apply$20.apply(RDD.scala:710)\n\tat org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:38)\n\tat org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:306)\n\tat org.apache.spark.rdd.RDD.iterator(RDD.scala:270)\n\tat org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:66)\n\tat org.apache.spark.scheduler.Task.run(Task.scala:89)\n\tat org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:214)\n\t... 3 more\n\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val S:BDM[Double] \u003d diag(BDV(svd.s.toArray))\nval V:BDM[Double] \u003d BDM(svd.V.toArray).reshape(svd.V.numRows,svd.V.numCols)\nval BSV: BDM[Double] \u003d S * V.t\n//BSV[Double](sp.indices, sp.values, sp.size)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042123_1626735670",
+      "id": "20160618-154847_1292523888",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "S: breeze.linalg.DenseMatrix[Double] \u003d \n78.91064366855638  0.0                0.0                ... (25 total)\n0.0                48.48102651777345  0.0                ...\n0.0                0.0                37.00639199505089  ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0                0.0                0.0                ...\n0.0           ...V: breeze.linalg.DenseMatrix[Double] \u003d \n-3.7999096013226144E-18  -8.157439340660849E-19  ... (25 total)\n-0.06822121222709485     0.09385949018365812     ...\n0.023320663731548577     0.023908561413011117    ...\n0.02714988999752041      0.010034571038862536    ...\n-0.015107163590816784    3.6233204028269215E-4   ...\n0.01432968529004408      0.027239739321689986    ...\n-6.254258546901236E-4    -0.00390808392806694    ...\n-0.059765274351148284    0.00622451500850359     ...\n-0.05542843679104775     -0.005591672328622059   ...\n-0.05782545235518207     -0.05506185450302979    ...\n-0.009681946056294275    -0.03422834967705153    ...\n-0.05210501585141476     0.04862387872738154     ...\n-0.13419856310487194     -0.0055689726719519855  ...\n1.490676551269242E-4     -0.023373998841043866   ...\n-0.0...BSV: breeze.linalg.DenseMatrix[Double] \u003d \n-2.9985331252269496E-16  -5.383379768689243    ... (1683 total)\n-3.95481032991707E-17    4.550404432538627     ...\n1.5478446238456629E-16   -0.756432059443033    ...\n-3.198720303201351E-17   -0.6996325307017247   ...\n9.225240871342078E-18    -1.9939626180711498   ...\n1.951915872822951E-17    3.039827497468476     ...\n7.95045481764321E-17     -0.05961275431225395  ...\n4.2301203979555806E-18   -2.6326560260666336   ...\n-3.140168572189321E-17   0.16330876072554193   ...\n-8.345896450579636E-17   1.6428747568073976    ...\n1.7768667649146347E-17   -0.9631541432866884   ...\n-2.5056947526941256E-17  2.5208001713104067    ...\n-8.160015076216572E-17   1.6648344289309835    ...\n8.959192382518111E-17    -1.9162903112449374   ...\n-2.2834449396781805E-17  -1...."
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val SV \u003d new DenseMatrix(BSV.rows,BSV.cols,BSV.data)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042123_1626735670",
+      "id": "20160618-155747_2069239263",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "SV: org.apache.spark.mllib.linalg.DenseMatrix \u003d \n-2.9985331252269496E-16  -5.383379768689243    ... (1683 total)\n-3.95481032991707E-17    4.550404432538627     ...\n1.5478446238456629E-16   -0.756432059443033    ...\n-3.198720303201351E-17   -0.6996325307017247   ...\n9.225240871342078E-18    -1.9939626180711498   ...\n1.951915872822951E-17    3.039827497468476     ...\n7.95045481764321E-17     -0.05961275431225395  ...\n4.2301203979555806E-18   -2.6326560260666336   ...\n-3.140168572189321E-17   0.16330876072554193   ...\n-8.345896450579636E-17   1.6428747568073976    ...\n1.7768667649146347E-17   -0.9631541432866884   ...\n-2.5056947526941256E-17  2.5208001713104067    ...\n-8.160015076216572E-17   1.6648344289309835    ...\n8.959192382518111E-17    -1.9162903112449374   ...\n-2.2834449396781805E-..."
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val predictionRow:RDD[IndexedRow] \u003d svd.U.multiply(SV).rows.map(row \u003d\u003e (row.index,row.vector)).join(normalization).map({case(id,(vec,(count,avg,std))) \u003d\u003e\n    var a \u003d vec.toArray\n    var i \u003d 0\n    while (i \u003c a.length) {\n        a(i) \u003d a(i)*std+avg\n        i +\u003d 1\n    }\n    a(0) \u003d 0\n    IndexedRow(id,Vectors.dense(a))\n})\n\nval prediction \u003d new IndexedRowMatrix(predictionRow)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042123_1626735670",
+      "id": "20160618-160732_1526929433",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "predictionRow: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.distributed.IndexedRow] \u003d MapPartitionsRDD[1012] at map at \u003cconsole\u003e:116\nprediction: org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix \u003d org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix@2e0f0d8a\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "prediction.rows.filter(row \u003d\u003e row.index\u003d\u003d778).map({case row \u003d\u003e \n    val vec:Vector \u003d row.vector.copy\n    val a:Array[Int] \u003d Array()\n    vec.toArray.zipWithIndex.sortBy(- _._1).map({case (a,b) \u003d\u003e(b,a)}).take(10).deep.mkString(\"\\n\")\n}).collect().foreach(println)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042124_1624811926",
+      "id": "20160618-160758_2090650997",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "(56,3.718617891112777)\n(186,3.5194309170248843)\n(168,3.495835558123795)\n(173,3.4814674964554895)\n(175,3.4442459553851315)\n(121,3.4405960165744336)\n(42,3.4184975700149716)\n(144,3.4007510382021553)\n(182,3.400494687504597)\n(195,3.3837191232761006)\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val moviesMap \u003d sc.textFile(\"/Users/bsmith/Desktop/MovieRecommendations/ml-100k/u.item\").map({line \u003d\u003e \n    val cols \u003d line.split(\u0027|\u0027)\n    (cols(0).toString.toLong,cols(1).toString)\n}).collect.toMap\n",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042129_1635200146",
+      "id": "20160618-163727_1589426938",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "moviesMap: scala.collection.immutable.Map[Long,String] \u003d Map(645 -\u003e Paris Is Burning (1990), 892 -\u003e Flubber (1997), 69 -\u003e Forrest Gump (1994), 1322 -\u003e Metisse (Caf� au Lait) (1993), 1665 -\u003e Brother\u0027s Kiss, A (1997), 1036 -\u003e Drop Dead Fred (1991), 1586 -\u003e Lashou shentan (1992), 1501 -\u003e Prisoner of the Mountains (Kavkazsky Plennik) (1996), 809 -\u003e Rising Sun (1993), 1337 -\u003e Larger Than Life (1996), 1411 -\u003e Barbarella (1968), 629 -\u003e Victor/Victoria (1982), 1024 -\u003e Mrs. Dalloway (1997), 1469 -\u003e Tom and Huck (1995), 365 -\u003e Powder (1995), 1369 -\u003e Forbidden Christ, The (Cristo proibito, Il) (1950), 138 -\u003e D3: The Mighty Ducks (1996), 1190 -\u003e That Old Feeling (1997), 1168 -\u003e Little Buddha (1993), 760 -\u003e Screamers (1995), 101 -\u003e Heavy Metal (1981), 1454 -\u003e Angel and the Badman (1947), 1633 -\u003e � k..."
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "prediction.rows.filter(row \u003d\u003e row.index\u003d\u003d778).map({case row \u003d\u003e \n    val vec:Vector \u003d row.vector.copy\n    vec.toArray.zipWithIndex.sortBy(- _._1).map({case (a,b) \u003d\u003e\n        var result \u003d  \"Unknown\"\n        if (moviesMap contains b) {result \u003d moviesMap(b)}\n        result\n    }).take(10).deep.mkString(\"\\n\")\n}).collect()\n\n",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042129_1635200146",
+      "id": "20160618-163847_705190880",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res266: Array[String] \u003d \nArray(Pulp Fiction (1994)\nBlues Brothers, The (1980)\nMonty Python and the Holy Grail (1974)\nPrincess Bride, The (1987)\nBrazil (1985)\nIndependence Day (ID4) (1996)\nClerks (1994)\nDie Hard (1988)\nGoodFellas (1990)\nTerminator, The (1984))\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val newPredictionRow:RDD[IndexedRow] \u003d prediction.rows.map(row \u003d\u003e (row.index,row)).join(mat.rows.map(row \u003d\u003e (row.index,row))).map({case (id,(ir1,ir2)) \u003d\u003e \n    var a:Array[Double] \u003d ir1.vector.toArray\n    val i:Array[Int] \u003d ir2.vector.toSparse.indices\n    for( index \u003c- i){\n        a(index) \u003d -999999\n    }\n    val v:Vector \u003d Vectors.dense(a)\n    IndexedRow(id,v)\n})\nval newPredictions \u003d  new IndexedRowMatrix(newPredictionRow)\n",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042130_1636354393",
+      "id": "20160618-164716_555859718",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "newPredictionRow: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.distributed.IndexedRow] \u003d MapPartitionsRDD[1025] at map at \u003cconsole\u003e:120\nnewPredictions: org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix \u003d org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix@2a49aa33\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042130_1636354393",
+      "id": "20160619-073900_1535390504",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res148: Array[String] \u003d \nArray(Saint, The (1997)\nEnglish Patient, The (1996)\nReturn of the Jedi (1983)\nChasing Amy (1997)\nGame, The (1997)\nDante\u0027s Peak (1997)\nG.I. Jane (1997)\nEvita (1996)\nKiss the Girls (1997)\nFull Monty, The (1997))\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "mat.rows.map(row \u003d\u003e (row.index,row.vector)).join(normalization).map({case(id,(vec,(count,avg,std))) \u003d\u003e\n        var a \u003d vec.toArray\n        var i \u003d 0\n        while (i \u003c a.length) {\n            a(i) \u003d a(i)*std+avg\n            i +\u003d 1\n        }\n        a(0) \u003d 0\n        IndexedRow(id,Vectors.dense(a))\n    }).filter(row \u003d\u003e row.index\u003d\u003d4).map({case row \u003d\u003e \n    val vec:Vector \u003d row.vector.copy\n    vec.toArray.zipWithIndex.sortBy(- _._1).map({case (a,b) \u003d\u003e\n        var result \u003d  \"Test\"\n        if (moviesMap contains b) {result \u003d \"%s (%s)\".format(moviesMap(b),a)}\n        result\n    }).take(25).deep.mkString(\"\\n\")\n}).collect().foreach(println)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042130_1636354393",
+      "id": "20160619-075558_2135892508",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "Star Wars (1977) (5.0)\nContact (1997) (5.0)\nLiar Liar (1997) (5.0)\nAir Force One (1997) (5.0)\nIn \u0026 Out (1997) (5.0)\nUlee\u0027s Gold (1997) (5.0)\nLost Highway (1997) (5.0)\nCop Land (1997) (5.0)\nDesperate Measures (1998) (5.0)\nWedding Singer, The (1998) (5.0)\nAssignment, The (1997) (5.0)\nWonderland (1997) (5.0)\nIncognito (1997) (5.0)\nBlues Brothers 2000 (1998) (5.0)\nToy Story (1995) (4.333333333333333)\nGoldenEye (1995) (4.333333333333333)\nFour Rooms (1995) (4.333333333333333)\nGet Shorty (1995) (4.333333333333333)\nCopycat (1995) (4.333333333333333)\nShanghai Triad (Yao a yao yao dao waipo qiao) (1995) (4.333333333333333)\nTwelve Monkeys (1995) (4.333333333333333)\nBabe (1995) (4.333333333333333)\nDead Man Walking (1995) (4.333333333333333)\nRichard III (1995) (4.333333333333333)\nUsual Suspects, The (1995) (4.333333333333333)\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "newPredictions.rows.filter(row \u003d\u003e row.index\u003d\u003d4).map({case row \u003d\u003e \n    val vec:Vector \u003d row.vector.copy\n    vec.toArray.zipWithIndex.sortBy(- _._1).map({case (a,b) \u003d\u003e\n        var result \u003d  \"Test\"\n        if (moviesMap contains b)  {result \u003d \"%s (%s)\".format(moviesMap(b),a)}\n        result\n    }).take(25).deep.mkString(\"\\n\")\n}).collect().foreach(println)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042130_1636354393",
+      "id": "20160619-075817_603576999",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "Titanic (1997) (4.615272552171183)\nJerry Maguire (1996) (4.544973441109854)\nToy Story (1995) (4.535136987954274)\nGodfather, The (1972) (4.446763213688978)\nFull Monty, The (1997) (4.43939778051168)\nBabe (1995) (4.437670185291308)\nAliens (1986) (4.433400798795826)\nCity of Lost Children, The (1995) (4.432217111215974)\nBoot, Das (1981) (4.431193317589672)\nBeavis and Butt-head Do America (1996) (4.427370926972049)\nReturn of the Jedi (1983) (4.426911218122447)\nGrease (1978) (4.421499659604761)\nWilly Wonka and the Chocolate Factory (1971) (4.420822511816812)\nHot Shots! Part Deux (1993) (4.418407084406469)\nUnforgiven (1992) (4.418129217705435)\nLone Star (1996) (4.415585399312351)\nStar Trek III: The Search for Spock (1984) (4.414959380629132)\nMen in Black (1997) (4.41309545356232)\nWrong Trousers, The (1993) (4.411719621766283)\nStar Trek VI: The Undiscovered Country (1991) (4.411069987373529)\nDumb \u0026 Dumber (1994) (4.411022761504807)\nSingin\u0027 in the Rain (1952) (4.410895028004514)\nStar Trek: The Motion Picture (1979) (4.410153665218472)\nStar Trek: The Wrath of Khan (1982) (4.405517723907256)\nAnnie Hall (1977) (4.405110127738629)\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val mat2Rows:RDD[IndexedRow] \u003d mat.rows.map(row \u003d\u003e (row.index,row.vector)).join(normalization).map({case(id,(vec,(count,avg,std))) \u003d\u003e\n        var a \u003d vec.toArray\n        var i \u003d 0\n        while (i \u003c a.length) {\n            a(i) \u003d a(i)*std+avg\n            i +\u003d 1\n        }\n        a(0) \u003d 0\n        IndexedRow(id,Vectors.dense(a))\n    })\nval mat2:IndexedRowMatrix \u003d new IndexedRowMatrix(mat2Rows)\n",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "lineNumbers": true,
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042131_1635969644",
+      "id": "20160619-080653_1518271477",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "mat2Rows: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.distributed.IndexedRow] \u003d MapPartitionsRDD[1112] at map at \u003cconsole\u003e:106\nmat2: org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix \u003d org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix@2118049f\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val MSE \u003d prediction.rows.map(row \u003d\u003e (row.index,row)).join(mat2.rows.map(row \u003d\u003e (row.index,row))).map({case (id,(ir1,ir2)) \u003d\u003e \n    var a:Array[Double] \u003d ir1.vector.toArray\n    var b:Array[Double] \u003d ir2.vector.toArray\n    val i:Array[Int] \u003d ir2.vector.toSparse.indices\n    var count:Int \u003d 0\n    var error:Double \u003d 0\n    for( index \u003c- i){\n        error +\u003d (b(index) - a(index))*(b(index) - a(index))\n        count +\u003d 1\n    }\n    (count,error)\n}).reduce({case((count1,error1),(count2,error2)) \u003d\u003e (count1+count2,error1+error2)})\nsqrt(MSE._2/MSE._1)",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042131_1635969644",
+      "id": "20160619-091640_441637534",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "MSE: (Int, Double) \u003d (1586126,78214.11229844863)\nres308: Double \u003d 0.22206172962895843\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "mat.rows.first()",
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {
+        "enabled": true,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042131_1635969644",
+      "id": "20160619-092552_451095186",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res301: org.apache.spark.mllib.linalg.distributed.IndexedRow \u003d IndexedRow(778,(1683,[94,78,7,1273,265,239,193,1035,616,230,582,262,238,780,195,209,121,738,204,496,174,197,161,234,98,180,56,11,268,568,367,451,42,186,150,157,200,281,54,28,132,8,144,79,249,82,755,69,117,154,143,712,550,35,246,405,216,226,219,423,168,196,441,623,629],[-0.781374672390342,-1.6005577966705389,0.8569915761700522,0.03780845188985511,0.8569915761700522,0.8569915761700522,0.8569915761700522,-1.6005577966705389,0.8569915761700522,-0.781374672390342,-1.6005577966705389,0.8569915761700522,0.03780845188985511,0.03780845188985511,0.8569915761700522,0.8569915761700522,0.03780845188985511,-1.6005577966705389,0.8569915761700522,-1.6005577966705389,0.8569915761700522,0.8569915761700522,0.03780845188985511,0.037808451889855..."
+      },
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "dateUpdated": "Jun 29, 2016 3:44:02 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215042131_1635969644",
+      "id": "20160619-092711_371215932",
+      "dateCreated": "Jun 29, 2016 3:44:02 PM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "SVD",
+  "id": "2BQJ6H2V2",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

@@ -1,0 +1,123 @@
+{
+  "paragraphs": [
+    {
+      "text": "import org.apache.spark.streaming.kafka._\nsc",
+      "dateUpdated": "Jun 29, 2016 3:42:36 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467150960618_1848254518",
+      "id": "20160628-215600_1686557379",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.streaming.kafka._\nres0: org.apache.spark.SparkContext \u003d org.apache.spark.SparkContext@7d6f04c7\n"
+      },
+      "dateCreated": "Jun 28, 2016 9:56:00 PM",
+      "dateStarted": "Jun 29, 2016 3:42:36 PM",
+      "dateFinished": "Jun 29, 2016 3:43:06 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n\n",
+      "dateUpdated": "Jun 29, 2016 3:42:46 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467150964459_-969661751",
+      "id": "20160628-215604_1101811326",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.streaming.kafka._\n"
+      },
+      "dateCreated": "Jun 28, 2016 9:56:04 PM",
+      "dateStarted": "Jun 29, 2016 3:39:28 PM",
+      "dateFinished": "Jun 29, 2016 3:39:54 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%dep\nz.load(\"com.databricks:spark-csv_2.10:1.4.0\")\nz.load(\"org.apache.spark:spark-streaming-kafka_2.10:1.3.0\")\n",
+      "dateUpdated": "Jun 29, 2016 3:42:46 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467214156615_467066903",
+      "id": "20160629-152916_320057762",
+      "dateCreated": "Jun 29, 2016 3:29:16 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Test SC",
+  "id": "2BNN7W8PF",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

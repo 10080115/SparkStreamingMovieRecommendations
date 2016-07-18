@@ -1,0 +1,588 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n#Recommendation Engine\n\n## Step 1 \n\nWe are going to save teh user and item files to a parquets to load in batch jobs.  This will make easy reading for sql joins\n",
+      "dateUpdated": "Jul 6, 2016 3:51:03 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "tableHide": false,
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820097045_-12762804",
+      "id": "20160706-154817_235818354",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch1\u003eRecommendation Engine\u003c/h1\u003e\n\u003ch2\u003eStep 1\u003c/h2\u003e\n\u003cp\u003eWe are going to save teh user and item files to a parquets to load in batch jobs.  This will make easy reading for sql joins\u003c/p\u003e\n"
+      },
+      "dateCreated": "Jul 6, 2016 3:48:17 PM",
+      "dateStarted": "Jul 6, 2016 3:50:58 PM",
+      "dateFinished": "Jul 6, 2016 3:50:58 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh \npwd\necho \u0027 \u0027\nls -la",
+      "dateUpdated": "Jul 6, 2016 3:52:47 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820102185_716351686",
+      "id": "20160706-154822_1350248895",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "/vagrant/RecommendationEngine\n \ntotal 2192\ndrwxr-xr-x 1 vagrant vagrant     170 Jul  6 15:44 .\ndrwxr-xr-x 1 vagrant vagrant     374 Jul  6 15:44 ..\n-rw-r----- 1 vagrant vagrant 1979173 Jul  6 15:44 u.data\n-rw-r----- 1 vagrant vagrant  236344 Jul  6 15:44 u.item\n-rw-r----- 1 vagrant vagrant   22628 Jul  6 15:44 u.user\n"
+      },
+      "dateCreated": "Jul 6, 2016 3:48:22 PM",
+      "dateStarted": "Jul 6, 2016 3:52:34 PM",
+      "dateFinished": "Jul 6, 2016 3:52:34 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh \nhead -5 u.user",
+      "dateUpdated": "Jul 6, 2016 3:53:22 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820379347_-10825379",
+      "id": "20160706-155259_1879554954",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "1|24|M|technician|85711\n2|53|F|other|94043\n3|23|M|writer|32067\n4|24|M|technician|43537\n5|33|F|other|15213\n"
+      },
+      "dateCreated": "Jul 6, 2016 3:52:59 PM",
+      "dateStarted": "Jul 6, 2016 3:53:22 PM",
+      "dateFinished": "Jul 6, 2016 3:53:22 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.sql.SQLContext\nimport org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType,LongType};\n\nval sqlContext \u003d new SQLContext(sc)\nval userSchema \u003d StructType(Array(\n    StructField(\"id\", IntegerType, false),\n    StructField(\"age\", IntegerType, true),\n    StructField(\"gender\", StringType, true),\n    StructField(\"job\", StringType, true),\n    StructField(\"zipcode\", StringType, true)))  //String type because some of the zips are not numbers\n    \nval users \u003d sqlContext.read\n    .format(\"com.databricks.spark.csv\")\n    .option(\"header\", \"false\") // Use first line of all files as header\n    .option(\"delimiter\",\"|\")\n    .schema(userSchema) // Automatically infer data types\n    .load(\"u.user\")\n\nusers.show()",
+      "dateUpdated": "Jul 6, 2016 4:25:08 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 515.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820385207_650573304",
+      "id": "20160706-155305_663639505",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.SQLContext\nimport org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType, LongType}\nsqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@3bc0bdd2\nuserSchema: org.apache.spark.sql.types.StructType \u003d StructType(StructField(id,IntegerType,false), StructField(age,IntegerType,true), StructField(gender,StringType,true), StructField(job,StringType,true), StructField(zipcode,StringType,true))\nusers: org.apache.spark.sql.DataFrame \u003d [id: int, age: int, gender: string, job: string, zipcode: string]\n+---+---+------+-------------+-------+\n| id|age|gender|          job|zipcode|\n+---+---+------+-------------+-------+\n|  1| 24|     M|   technician|  85711|\n|  2| 53|     F|        other|  94043|\n|  3| 23|     M|       writer|  32067|\n|  4| 24|     M|   technician|  43537|\n|  5| 33|     F|        other|  15213|\n|  6| 42|     M|    executive|  98101|\n|  7| 57|     M|administrator|  91344|\n|  8| 36|     M|administrator|  05201|\n|  9| 29|     M|      student|  01002|\n| 10| 53|     M|       lawyer|  90703|\n| 11| 39|     F|        other|  30329|\n| 12| 28|     F|        other|  06405|\n| 13| 47|     M|     educator|  29206|\n| 14| 45|     M|    scientist|  55106|\n| 15| 49|     F|     educator|  97301|\n| 16| 21|     M|entertainment|  10309|\n| 17| 30|     M|   programmer|  06355|\n| 18| 35|     F|        other|  37212|\n| 19| 40|     M|    librarian|  02138|\n| 20| 42|     F|    homemaker|  95660|\n+---+---+------+-------------+-------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 3:53:05 PM",
+      "dateStarted": "Jul 6, 2016 4:25:08 PM",
+      "dateFinished": "Jul 6, 2016 4:25:10 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\nhead -5 u.item",
+      "dateUpdated": "Jul 6, 2016 3:59:54 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820784105_-6794000",
+      "id": "20160706-155944_547862214",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "1|Toy Story (1995)|01-Jan-1995||http://us.imdb.com/M/title-exact?Toy%20Story%20(1995)|0|0|0|1|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0\n2|GoldenEye (1995)|01-Jan-1995||http://us.imdb.com/M/title-exact?GoldenEye%20(1995)|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0\n3|Four Rooms (1995)|01-Jan-1995||http://us.imdb.com/M/title-exact?Four%20Rooms%20(1995)|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0\n4|Get Shorty (1995)|01-Jan-1995||http://us.imdb.com/M/title-exact?Get%20Shorty%20(1995)|0|1|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0\n5|Copycat (1995)|01-Jan-1995||http://us.imdb.com/M/title-exact?Copycat%20(1995)|0|0|0|0|0|0|1|0|1|0|0|0|0|0|0|0|1|0|0\n"
+      },
+      "dateCreated": "Jul 6, 2016 3:59:44 PM",
+      "dateStarted": "Jul 6, 2016 3:59:54 PM",
+      "dateFinished": "Jul 6, 2016 3:59:55 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval movieSchema \u003d StructType(Array(StructField(\"movieId\", IntegerType, false),\n            StructField(\"title\",StringType,false),\n            StructField(\"releaseDate\",StringType,false),\n            StructField(\"videoDate\",StringType,true),\n            StructField(\"url\",StringType,true),\n            StructField(\"unknown\",IntegerType,true),\n            StructField(\"action\",IntegerType,true),\n            StructField(\"adventure\",IntegerType,true),\n            StructField(\"animation\",IntegerType,true),\n            StructField(\"children\",IntegerType,true),\n            StructField(\"comedy\",IntegerType,true),\n            StructField(\"crime\",IntegerType,true),\n            StructField(\"documentary\",IntegerType,true),\n            StructField(\"drama\",IntegerType,true),\n            StructField(\"fantasy\",IntegerType,true),\n            StructField(\"filmnoir\",IntegerType,true),\n            StructField(\"horror\",IntegerType,true),\n            StructField(\"musical\",IntegerType,true),\n            StructField(\"mystery\",IntegerType,true),\n            StructField(\"romance\",IntegerType,true),\n            StructField(\"scifi\",IntegerType,true),\n            StructField(\"thriller\",IntegerType,true),\n            StructField(\"war\",IntegerType,true),\n            StructField(\"western\",IntegerType,true)))\n            \nval movies \u003d sqlContext.read\n    .format(\"com.databricks.spark.csv\")\n    .option(\"header\", \"false\") // Use first line of all files as header\n    .option(\"delimiter\",\"|\")\n    .schema(movieSchema)\n    .load(\"u.item\")\n    \nmovies.show(5)",
+      "dateUpdated": "Jul 6, 2016 4:02:01 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 440.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820872170_538313113",
+      "id": "20160706-160112_642075358",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "movieSchema: org.apache.spark.sql.types.StructType \u003d StructType(StructField(movieId,IntegerType,false), StructField(title,StringType,false), StructField(releaseDate,StringType,false), StructField(videoDate,StringType,true), StructField(url,StringType,true), StructField(unknown,IntegerType,true), StructField(action,IntegerType,true), StructField(adventure,IntegerType,true), StructField(animation,IntegerType,true), StructField(children,IntegerType,true), StructField(comedy,IntegerType,true), StructField(crime,IntegerType,true), StructField(documentary,IntegerType,true), StructField(drama,IntegerType,true), StructField(fantasy,IntegerType,true), StructField(filmnoir,IntegerType,true), StructField(horror,IntegerType,true), StructField(musical,IntegerType,true), StructField(mystery,IntegerTy...movies: org.apache.spark.sql.DataFrame \u003d [movieId: int, title: string, releaseDate: string, videoDate: string, url: string, unknown: int, action: int, adventure: int, animation: int, children: int, comedy: int, crime: int, documentary: int, drama: int, fantasy: int, filmnoir: int, horror: int, musical: int, mystery: int, romance: int, scifi: int, thriller: int, war: int, western: int]\n+-------+-----------------+-----------+---------+--------------------+-------+------+---------+---------+--------+------+-----+-----------+-----+-------+--------+------+-------+-------+-------+-----+--------+---+-------+\n|movieId|            title|releaseDate|videoDate|                 url|unknown|action|adventure|animation|children|comedy|crime|documentary|drama|fantasy|filmnoir|horror|musical|mystery|romance|scifi|thriller|war|western|\n+-------+-----------------+-----------+---------+--------------------+-------+------+---------+---------+--------+------+-----+-----------+-----+-------+--------+------+-------+-------+-------+-----+--------+---+-------+\n|      1| Toy Story (1995)|01-Jan-1995|         |http://us.imdb.co...|      0|     0|        0|        1|       1|     1|    0|          0|    0|      0|       0|     0|      0|      0|      0|    0|       0|  0|      0|\n|      2| GoldenEye (1995)|01-Jan-1995|         |http://us.imdb.co...|      0|     1|        1|        0|       0|     0|    0|          0|    0|      0|       0|     0|      0|      0|      0|    0|       1|  0|      0|\n|      3|Four Rooms (1995)|01-Jan-1995|         |http://us.imdb.co...|      0|     0|        0|        0|       0|     0|    0|          0|    0|      0|       0|     0|      0|      0|      0|    0|       1|  0|      0|\n|      4|Get Shorty (1995)|01-Jan-1995|         |http://us.imdb.co...|      0|     1|        0|        0|       0|     1|    0|          0|    1|      0|       0|     0|      0|      0|      0|    0|       0|  0|      0|\n|      5|   Copycat (1995)|01-Jan-1995|         |http://us.imdb.co...|      0|     0|        0|        0|       0|     0|    1|          0|    1|      0|       0|     0|      0|      0|      0|    0|       1|  0|      0|\n+-------+-----------------+-----------+---------+--------------------+-------+------+---------+---------+--------+------+-----+-----------+-----+-------+--------+------+-------+-------+-------+-----+--------+---+-------+\nonly showing top 5 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:01:12 PM",
+      "dateStarted": "Jul 6, 2016 4:01:54 PM",
+      "dateFinished": "Jul 6, 2016 4:01:56 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n## Save parquet format",
+      "dateUpdated": "Jul 6, 2016 4:02:04 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820688701_-1364126823",
+      "id": "20160706-155808_735895488",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch2\u003eSave parquet format\u003c/h2\u003e\n"
+      },
+      "dateCreated": "Jul 6, 2016 3:58:08 PM",
+      "dateStarted": "Jul 6, 2016 4:02:04 PM",
+      "dateFinished": "Jul 6, 2016 4:02:04 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nmovies.write.parquet(\"movies.parquet\")\nusers.write.parquet(\"users.parquet\")",
+      "dateUpdated": "Jul 6, 2016 4:17:24 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467820267203_-469197592",
+      "id": "20160706-155107_1250411039",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Jul 6, 2016 3:51:07 PM",
+      "dateStarted": "Jul 6, 2016 4:17:24 PM",
+      "dateFinished": "Jul 6, 2016 4:17:28 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\nls -la",
+      "dateUpdated": "Jul 6, 2016 4:17:35 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467821844733_321141234",
+      "id": "20160706-161724_410472020",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "total 2196\ndrwxr-xr-x 1 vagrant vagrant     306 Jul  6  2016 .\ndrwxr-xr-x 1 vagrant vagrant     374 Jul  6 15:44 ..\n-rw-r--r-- 1 vagrant vagrant     744 Jul  6 15:56 derby.log\ndrwxr-xr-x 1 vagrant vagrant     306 Jul  6 15:56 metastore_db\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6  2016 movies.parquet\n-rw-r----- 1 vagrant vagrant 1979173 Jul  6 15:44 u.data\n-rw-r----- 1 vagrant vagrant  236344 Jul  6 15:44 u.item\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6  2016 users.parquet\n-rw-r----- 1 vagrant vagrant   22628 Jul  6 15:44 u.user\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:17:24 PM",
+      "dateStarted": "Jul 6, 2016 4:17:35 PM",
+      "dateFinished": "Jul 6, 2016 4:17:35 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md \n## Ratings\n\nThe goal is to create a streaming process using the rating data write to the database, make new user features, and build models.  For building some toy models I am going to write the whole dataset to ratings_all.parquet",
+      "dateUpdated": "Jul 6, 2016 4:23:39 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467821855425_1036464710",
+      "id": "20160706-161735_343458234",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch2\u003eRatings\u003c/h2\u003e\n\u003cp\u003eThe goal is to create a streaming process using the rating data write to the database, make new user features, and build models.  For building some toy models I am going to write the whole dataset to ratings_all.parquet\u003c/p\u003e\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:17:35 PM",
+      "dateStarted": "Jul 6, 2016 4:23:36 PM",
+      "dateFinished": "Jul 6, 2016 4:23:36 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval ratingSchema \u003d StructType(Array(StructField(\"userId\", IntegerType, false),\n            StructField(\"movieId\",IntegerType,false),\n            StructField(\"rating\",IntegerType,false),\n            StructField(\"timestamp\",LongType,true)))\n            \nval ratings_all \u003d sqlContext.read\n    .format(\"com.databricks.spark.csv\")\n    .option(\"header\", \"false\") // Use first line of all files as header\n    .option(\"delimiter\",\"\\t\")\n    .schema(ratingSchema)\n    .load(\"u.data\")\n    \nratings_all.show()",
+      "dateUpdated": "Jul 6, 2016 4:25:21 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822216774_-1759968561",
+      "id": "20160706-162336_77851231",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "ratingSchema: org.apache.spark.sql.types.StructType \u003d StructType(StructField(userId,IntegerType,false), StructField(movieId,IntegerType,false), StructField(rating,IntegerType,false), StructField(timestamp,LongType,true))\nratings_all: org.apache.spark.sql.DataFrame \u003d [userId: int, movieId: int, rating: int, timestamp: bigint]\n+------+-------+------+---------+\n|userId|movieId|rating|timestamp|\n+------+-------+------+---------+\n|   196|    242|     3|881250949|\n|   186|    302|     3|891717742|\n|    22|    377|     1|878887116|\n|   244|     51|     2|880606923|\n|   166|    346|     1|886397596|\n|   298|    474|     4|884182806|\n|   115|    265|     2|881171488|\n|   253|    465|     5|891628467|\n|   305|    451|     3|886324817|\n|     6|     86|     3|883603013|\n|    62|    257|     2|879372434|\n|   286|   1014|     5|879781125|\n|   200|    222|     5|876042340|\n|   210|     40|     3|891035994|\n|   224|     29|     3|888104457|\n|   303|    785|     3|879485318|\n|   122|    387|     5|879270459|\n|   194|    274|     2|879539794|\n|   291|   1042|     4|874834944|\n|   234|   1184|     2|892079237|\n+------+-------+------+---------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:23:36 PM",
+      "dateStarted": "Jul 6, 2016 4:25:21 PM",
+      "dateFinished": "Jul 6, 2016 4:25:22 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nratings_all.write.parquet(\"ratings_all.parquet\")",
+      "dateUpdated": "Jul 6, 2016 4:25:42 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822299686_1165600779",
+      "id": "20160706-162459_1719041804",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Jul 6, 2016 4:24:59 PM",
+      "dateStarted": "Jul 6, 2016 4:25:42 PM",
+      "dateFinished": "Jul 6, 2016 4:25:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n## Make a parquet to write to for the rating",
+      "dateUpdated": "Jul 6, 2016 4:27:09 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822342644_581059930",
+      "id": "20160706-162542_459746262",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch2\u003eMake a parquet to write to for the rating\u003c/h2\u003e\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:25:42 PM",
+      "dateStarted": "Jul 6, 2016 4:27:09 PM",
+      "dateFinished": "Jul 6, 2016 4:27:09 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\ncase class Rating(userId:Int,movieId:Int,rating:Int,timestamp:Long)\nval rating \u003d sc.parallelize(Array(Rating(0,0,0,0L))).toDF()\nrating.show()",
+      "dateUpdated": "Jul 6, 2016 4:28:27 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822429483_-690276318",
+      "id": "20160706-162709_752645077",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "defined class Rating\nrating: org.apache.spark.sql.DataFrame \u003d [userId: int, movieId: int, rating: int, timestamp: bigint]\n+------+-------+------+---------+\n|userId|movieId|rating|timestamp|\n+------+-------+------+---------+\n|     0|      0|     0|        0|\n+------+-------+------+---------+\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:27:09 PM",
+      "dateStarted": "Jul 6, 2016 4:28:27 PM",
+      "dateFinished": "Jul 6, 2016 4:28:31 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nrating.write.parquet(\"ratings_stream.parquet\")",
+      "dateUpdated": "Jul 6, 2016 4:29:00 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822489457_-1811541882",
+      "id": "20160706-162809_1196076632",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Jul 6, 2016 4:28:09 PM",
+      "dateStarted": "Jul 6, 2016 4:29:00 PM",
+      "dateFinished": "Jul 6, 2016 4:29:01 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\nls -la",
+      "dateUpdated": "Jul 6, 2016 4:29:07 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/sh"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822540901_-305726632",
+      "id": "20160706-162900_896381522",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "total 2196\ndrwxr-xr-x 1 vagrant vagrant     374 Jul  6  2016 .\ndrwxr-xr-x 1 vagrant vagrant     374 Jul  6 15:44 ..\n-rw-r--r-- 1 vagrant vagrant     744 Jul  6 15:56 derby.log\ndrwxr-xr-x 1 vagrant vagrant     306 Jul  6 15:56 metastore_db\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 movies.parquet\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:26 ratings_all.parquet\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6  2016 ratings_stream.parquet\n-rw-r----- 1 vagrant vagrant 1979173 Jul  6 15:44 u.data\n-rw-r----- 1 vagrant vagrant  236344 Jul  6 15:44 u.item\ndrwxr-xr-x 1 vagrant vagrant     340 Jul  6 16:17 users.parquet\n-rw-r----- 1 vagrant vagrant   22628 Jul  6 15:44 u.user\n"
+      },
+      "dateCreated": "Jul 6, 2016 4:29:00 PM",
+      "dateStarted": "Jul 6, 2016 4:29:08 PM",
+      "dateFinished": "Jul 6, 2016 4:29:08 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh ",
+      "dateUpdated": "Jul 6, 2016 4:29:07 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467822547983_-309943546",
+      "id": "20160706-162907_137578681",
+      "dateCreated": "Jul 6, 2016 4:29:07 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "RecommendationEngine/MakeParquets",
+  "id": "2BRKZ26VS",
+  "lastReplName": {
+    "value": "sh"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

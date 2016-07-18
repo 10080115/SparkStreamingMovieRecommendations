@@ -1,0 +1,326 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark \n\ncase class User(id:Long,name:String,age:Int)\n\nval df \u003d sc.parallelize(Array(User(1L,\"Bryan\",35),User(2L,\"Dave\",36),User(3l,\"Chris\",35),User(4L,\"Michael\",35))).toDF()\ndf.show()",
+      "dateUpdated": "Jul 6, 2016 4:52:43 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467743646372_153544910",
+      "id": "20160705-183406_1660148964",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "defined class User\ndf: org.apache.spark.sql.DataFrame \u003d [id: bigint, name: string, age: int]\n+---+-------+---+\n| id|   name|age|\n+---+-------+---+\n|  1|  Bryan| 35|\n|  2|   Dave| 36|\n|  3|  Chris| 35|\n|  4|Michael| 35|\n+---+-------+---+\n\n"
+      },
+      "dateCreated": "Jul 5, 2016 6:34:06 PM",
+      "dateStarted": "Jul 6, 2016 4:52:43 PM",
+      "dateFinished": "Jul 6, 2016 4:52:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport org.apache.spark.sql.SaveMode\nimport java.util.Properties\nval dbProperties \u003d new Properties\ndbProperties.setProperty(\"user\",\"postgres\")\ndbProperties.setProperty(\"password\",\"purple\")\n\nval df \u003d sc.parallelize(Array(User(1L,\"Bryan\",35),User(2L,\"Dave\",37),User(3l,\"Chris\",35))).toDF()//,User(4L,\"Michael\",35))).toDF()\ndf.write.mode(SaveMode.Overwrite).jdbc(\"jdbc:postgresql://localhost:5432/\",\"public.users\",dbProperties)",
+      "dateUpdated": "Jul 6, 2016 4:52:45 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467744032754_-47174711",
+      "id": "20160705-184032_2116104916",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.sql.SaveMode\nimport java.util.Properties\ndbProperties: java.util.Properties \u003d {}\nres38: Object \u003d null\nres39: Object \u003d null\ndf: org.apache.spark.sql.DataFrame \u003d [id: bigint, name: string, age: int]\n"
+      },
+      "dateCreated": "Jul 5, 2016 6:40:32 PM",
+      "dateStarted": "Jul 6, 2016 4:52:45 PM",
+      "dateFinished": "Jul 6, 2016 4:52:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval jdbcDF \u003d sqlContext.read.format(\"jdbc\").options(\n  Map(\"url\" -\u003e \"jdbc:postgresql://localhost:5432/\",\n  \"dbtable\" -\u003e \"(SELECT * FROM public.users WHERE AGE \u003d 35) as foo\",\n  \"password\" -\u003e \"purple\",\n  \"user\" -\u003e \"postgres\")).load()\n \njdbcDF.show()",
+      "dateUpdated": "Jul 6, 2016 12:06:09 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467744594979_264102997",
+      "id": "20160705-184954_1535540273",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "jdbcDF: org.apache.spark.sql.DataFrame \u003d [id: bigint, name: string, age: int]\n+---+-----+---+\n| id| name|age|\n+---+-----+---+\n|  1|Bryan| 35|\n|  3|Chris| 35|\n+---+-----+---+\n\n"
+      },
+      "dateCreated": "Jul 5, 2016 6:49:54 PM",
+      "dateStarted": "Jul 6, 2016 12:06:09 AM",
+      "dateFinished": "Jul 6, 2016 12:06:09 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \njdbcDF.show()",
+      "dateUpdated": "Jul 5, 2016 11:58:39 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467745311736_-933428217",
+      "id": "20160705-190151_1738640214",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---+-----+---+\n| id| name|age|\n+---+-----+---+\n|  1|Bryan| 35|\n|  2| Dave| 37|\n|  3|Chris| 35|\n+---+-----+---+\n\n"
+      },
+      "dateCreated": "Jul 5, 2016 7:01:51 PM",
+      "dateStarted": "Jul 5, 2016 11:58:39 PM",
+      "dateFinished": "Jul 5, 2016 11:58:40 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \n\nval jdbcDF \u003d sqlContext.read.format(\"jdbc\").options(\n  Map(\"url\" -\u003e \"jdbc:postgresql://guide-pg-dev.int.payoff.com:5432/guide_dev\",\n  \"dbtable\" -\u003e \"public.guide\",\n  \"password\" -\u003e \"ZYcbwxF60J1WCiYX4NVWL1XaxzebzR\",\n  \"user\" -\u003e \"guide_ods\",\n  \"ssl\" -\u003e \"true\",\n  \"sslfactory\" -\u003e \"org.postgresql.ssl.NonValidatingFactory\")).load()\n \njdbcDF.show()",
+      "dateUpdated": "Jul 6, 2016 4:47:11 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467745400047_850221712",
+      "id": "20160705-190320_538166961",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "jdbcDF: org.apache.spark.sql.DataFrame \u003d [session_id: string, fpq_data: string, user_data: string, fis_data: string, created_date: timestamp, modified_date: timestamp, cashflow_data: string, credit_data: string, cushion_data: string, person_uid: string, pull_credit_data: string]\n+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+\n|          session_id|            fpq_data|           user_data|            fis_data|        created_date|       modified_date|       cashflow_data|         credit_data|        cushion_data|          person_uid|    pull_credit_data|\n+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+\n|w0lA8lZ3at1AdAv59...|{\"personality\": \"...|{\"sess\": {\"curren...|{\"questions\": [{\"...|2016-06-23 23:27:...|2016-06-23 23:27:...|{\"state\": \"USA\", ...|{\"marketo_sent\": ...|{\"cash_cushion\": ...|f8fac02d-efda-410...|{\"consent\": true,...|\n|bE1YvAmcufBYysjHS...|{\"personality\": \"...|{\"sess\": {\"curren...|{\"questions\": [{\"...|2016-06-23 23:28:...|2016-06-23 23:28:...|{\"state\": \"USA\", ...|{\"marketo_sent\": ...|{\"cash_cushion\": ...|f8fac02d-efda-410...|{\"consent\": true,...|\n|W3ZsnT6LP9VbPPhwY...|                null|{\"sess\": {\"curren...|                null|2016-06-23 23:28:...|2016-06-23 23:28:...|                null|                null|                null|                null|                null|\n|FHVvJA79EStClNv0o...|                null|{\"sess\": {\"curren...|                null|2016-06-23 23:20:...|2016-06-23 23:20:...|                null|                null|                null|3856ebb3-f11b-468...|{\"consent\": true,...|\n|APhAyY4JRsPhazQIW...|                null|{\"sess\": {\"curren...|                null|2016-06-23 19:41:...|2016-06-24 17:15:...|                null|                null|                null|                null|{\"consent\": true,...|\n|9p83YahZb6tZ_hjBy...|                null|{\"sess\": {\"curren...|                null|2016-06-23 22:55:...|2016-06-23 22:55:...|                null|                null|                null|                null|{\"consent\": true,...|\n|wL7ueMlBOvGzjsACN...|                null|{\"sess\": {\"curren...|                null|2016-06-23 19:27:...|2016-06-23 19:27:...|                null|                null|                null|                null|{\"consent\": true,...|\n|59AiWpB2_iMwgU-3W...|                null|{\"sess\": {\"curren...|                null|2016-05-12 06:39:...|2016-05-12 06:39:...|                null|                null|                null|                null|{\"consent\": true,...|\n|FWXdTcnR1Nfvw38np...|                null|{\"sess\": {\"curren...|                null|2016-06-23 23:21:...|2016-06-23 23:22:...|                null|                null|                null|2b8efe39-ee4b-470...|{\"consent\": true,...|\n|IsgCjWD7h23Gx0box...|{\"personality\": \"...|{\"sess\": {\"curren...|{\"questions\": [{\"...|2016-06-23 23:21:...|2016-06-23 23:22:...|                null|                null|                null|16116b5f-8d19-429...|{\"consent\": true,...|\n|2PDmq29FnZLbuATX0...|                null|{\"sess\": {\"curren...|                null|2016-06-23 22:58:...|2016-06-23 22:58:...|{\"state\": \"Califo...|{\"marketo_sent\": ...|{\"cash_cushion\": ...|d55fdd67-7a27-426...|{\"consent\": true,...|\n|WX-f_WluKL-Omy2kO...|{\"personality\": \"...|{\"sess\": {\"curren...|{\"questions\": [{\"...|2016-06-23 23:29:...|2016-06-23 23:29:...|{\"state\": \"USA\", ...|{\"marketo_sent\": ...|{\"cash_cushion\": ...|f8fac02d-efda-410...|{\"consent\": true,...|\n|n36sSRdGCaJVvmuDg...|                null|{\"sess\": {\"curren...|                null|2016-06-23 21:41:...|2016-06-23 21:41:...|                null|                null|                null|                null|{\"consent\": true,...|\n|bnM4OJQKhK1k_RBXC...|                null|                  {}|                null|2016-04-18 06:05:...|2016-04-18 06:05:...|                null|                null|                null|                null|{\"consent\": true,...|\n|8mNVom4gB5_HKw4kf...|{\"personality\": \"...|{\"sess\": {\"curren...|                null|2016-05-13 22:05:...|2016-05-13 22:05:...|                null|                null|                null|30db64e2-6214-40f...|{\"consent\": true,...|\n|9xYZx1TvJqAyTTtQr...|                null|{\"sess\": {\"curren...|                null|2016-06-23 23:30:...|2016-06-24 01:17:...|                null|                null|                null|                null|                null|\n|dyxzvikiu4GanqvJa...|                null|{\"sess\": {\"curren...|                null|2016-03-09 00:15:...|2016-03-09 00:15:...|                null|                null|                null|                null|{\"consent\": true,...|\n|pvy1A9c7ZxtytCACB...|                null|{\"sess\": {\"curren...|{\"questions\": [{\"...|2016-06-23 23:32:...|2016-06-23 23:32:...|                null|                null|                null|                null|{\"consent\": true,...|\n|o1l2TXpHzGJyhcPih...|                null|{\"sess\": {\"curren...|                null|2016-06-23 14:25:...|2016-06-23 14:25:...|                null|                null|                null|                null|{\"consent\": true,...|\n|rxhvXPodCv3e8nGsZ...|                null|{\"sess\": {\"curren...|                null|2016-06-23 14:27:...|2016-06-23 14:27:...|                null|                null|                null|                null|{\"consent\": true,...|\n+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+\nonly showing top 20 rows\n\n"
+      },
+      "dateCreated": "Jul 5, 2016 7:03:20 PM",
+      "dateStarted": "Jul 6, 2016 4:47:11 PM",
+      "dateFinished": "Jul 6, 2016 4:47:29 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval jdbcDF \u003d sqlContext.read.format(\"jdbc\").options(\n  Map(\"url\" -\u003e \"jdbc:postgresql://localhost:5432/\",\n  \"dbtable\" -\u003e \"(SELECT * FROM public.user_vectors) as foo\",\n  \"password\" -\u003e \"purple\",\n  \"user\" -\u003e \"postgres\")).load()\n\njdbcDF.show()",
+      "dateUpdated": "Jul 6, 2016 4:51:57 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467750042326_991057825",
+      "id": "20160705-202042_1147231135",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "jdbcDF: org.apache.spark.sql.DataFrame \u003d [id: int, features: string]\n+---+--------------------+\n| id|            features|\n+---+--------------------+\n|  1|{\"f1\": 948.3, \"ag...|\n+---+--------------------+\n\n"
+      },
+      "dateCreated": "Jul 5, 2016 8:20:42 PM",
+      "dateStarted": "Jul 6, 2016 4:51:57 PM",
+      "dateFinished": "Jul 6, 2016 4:51:59 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval jdbcDF \u003d sqlContext.read.format(\"jdbc\").options(\n  Map(\"url\" -\u003e \"jdbc:postgresql://localhost:5432/\",\n  \"dbtable\" -\u003e \"(SELECT id,features#\u003e\u0027{age}\u0027 as age,features#\u003e\u0027{f1}\u0027 as f1 FROM public.user_vectors) as foo\",\n  \"password\" -\u003e \"purple\",\n  \"user\" -\u003e \"postgres\")).load()\n\njdbcDF.show()",
+      "dateUpdated": "Jul 6, 2016 12:09:13 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467763359511_971760351",
+      "id": "20160706-000239_1619636706",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "jdbcDF: org.apache.spark.sql.DataFrame \u003d [id: int, age: string, f1: string]\n+---+---+-----+\n| id|age|   f1|\n+---+---+-----+\n|  1| 15|948.3|\n+---+---+-----+\n\n"
+      },
+      "dateCreated": "Jul 6, 2016 12:02:39 AM",
+      "dateStarted": "Jul 6, 2016 12:09:14 AM",
+      "dateFinished": "Jul 6, 2016 12:09:14 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval test \u003d jdbcDF.withColumn(\"junk\",$\"features\").select($\"id\",$\"junk\")\ntest.show()\n\nval dbProperties \u003d new Properties\ndbProperties.setProperty(\"user\",\"guide_ods\")\ndbProperties.setProperty(\"password\",\"ZYcbwxF60J1WCiYX4NVWL1XaxzebzR\")\ndbProperties.setProperty(\"ssl\",\"true\")\ndbProperties.setProperty(\"sslfactory\",\"org.postgresql.ssl.NonValidatingFactory\")\n\ntest.write.mode(SaveMode.Append).jdbc(\"jdbc:postgresql://guide-pg-dev.int.payoff.com:5432/guide_dev\",\"public.bryan_test\",dbProperties)\n",
+      "dateUpdated": "Jul 6, 2016 4:58:15 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467763748325_852238072",
+      "id": "20160706-000908_2025534348",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "test: org.apache.spark.sql.DataFrame \u003d [id: int, junk: string]\n+---+--------------------+\n| id|                junk|\n+---+--------------------+\n|  1|{\"f1\": 948.3, \"ag...|\n+---+--------------------+\n\ndbProperties: java.util.Properties \u003d {}\nres65: Object \u003d null\nres66: Object \u003d null\nres67: Object \u003d null\nres68: Object \u003d null\n"
+      },
+      "dateCreated": "Jul 6, 2016 12:09:08 AM",
+      "dateStarted": "Jul 6, 2016 4:58:15 PM",
+      "dateFinished": "Jul 6, 2016 4:58:19 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "dateUpdated": "Jul 6, 2016 5:02:52 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467823949920_961241629",
+      "id": "20160706-165229_558364746",
+      "dateCreated": "Jul 6, 2016 4:52:29 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "read-write/Postgres Write",
+  "id": "2BRR8H9YN",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

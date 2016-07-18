@@ -64,8 +64,16 @@ echo -e "\t\t<value>mapreduce_shuffle</value>" >> /home/vagrant/hadoop-2.6.0/etc
 echo -e "\t</property>" >> /home/vagrant/hadoop-2.6.0/etc/hadoop/yarn-site.xml
 echo "</configuration>" >> /home/vagrant/hadoop-2.6.0/etc/hadoop/yarn-site.xml
 
+
+chmod vagrant /etc/ssh/ssh_config
+echo -e "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+echo -e "    UserKnownHostFile=/dev/null" >> /etc/ssh/ssh_config
+
+ssh-keygen -t dsa -P '' -f >> ~/.ssh/id_dsa
+sudo cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+
 echo "Y" | hdfs namenode -format
-echo "yes" | /home/vagrant/hadoop-2.6.0/sbin/start-dfs.sh
+/home/vagrant/hadoop-2.6.0/sbin/start-dfs.sh
 hdfs dfs -mkdir /user
 hdfs dfs -mkdir /user/vagrant
 hdfs dfs -mkdir /user/hive

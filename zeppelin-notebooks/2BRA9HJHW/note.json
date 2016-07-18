@@ -1,0 +1,78 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark \n//org.apache.kafka included\nimport org.apache.kafka.clients.producer.KafkaProducer\nimport java.util.Properties\nimport org.apache.kafka.clients.producer.Producer\nimport org.apache.kafka.clients.producer.ProducerRecord\n\nval props \u003d new Properties();\nprops.put(\"bootstrap.servers\", \"localhost:9092\");\nprops.put(\"acks\", \"all\");\nval retries:java.lang.Integer \u003d 0\nprops.put(\"retries\", retries);\nval batchSize:java.lang.Integer \u003d 16384\nprops.put(\"batch.size\", batchSize);\nval lingerMs:java.lang.Integer \u003d 1 \nprops.put(\"linger.ms\", lingerMs);\nval bufferMemory:java.lang.Integer \u003d 33554432\nprops.put(\"buffer.memory\", bufferMemory);\nprops.put(\"key.serializer\", \"org.apache.kafka.common.serialization.StringSerializer\");\nprops.put(\"value.serializer\", \"org.apache.kafka.common.serialization.StringSerializer\");\n\nval producer:Producer[String, String] \u003d new KafkaProducer(props);\n\nfor( i \u003c- 1 to 100){\n    val record:ProducerRecord[String,String] \u003d new ProducerRecord(\"scala-test\",i.toString,i.toString)\n    producer.send(record)\n}\nproducer.close",
+      "dateUpdated": "Jul 8, 2016 3:59:24 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467990668257_143039515",
+      "id": "20160708-151108_333195153",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.kafka.clients.producer.KafkaProducer\nimport java.util.Properties\nprops: java.util.Properties \u003d {}\nres0: Object \u003d null\nres1: Object \u003d null\nretries: Integer \u003d 0\nres2: Object \u003d null\nbatchSize: Integer \u003d 16384\nres3: Object \u003d null\nlingerMs: Integer \u003d 1\nres4: Object \u003d null\nbufferMemory: Integer \u003d 33554432\nres5: Object \u003d null\nres6: Object \u003d null\nres7: Object \u003d null\n"
+      },
+      "dateCreated": "Jul 8, 2016 3:11:08 PM",
+      "dateStarted": "Jul 8, 2016 3:35:00 PM",
+      "dateFinished": "Jul 8, 2016 3:35:48 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark ",
+      "dateUpdated": "Jul 8, 2016 3:36:00 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467992160476_-254877335",
+      "id": "20160708-153600_21215022",
+      "dateCreated": "Jul 8, 2016 3:36:00 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "read-write/Kafka",
+  "id": "2BRA9HJHW",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

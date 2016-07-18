@@ -1,0 +1,280 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark \nimport kafka.serializer.StringDecoder\nimport org.apache.spark.streaming._\nimport org.apache.spark.streaming.kafka._\n\nval ssc \u003d new StreamingContext(sc, Seconds(1))\nval topicsSet \u003d Array(\"spark-stream\").toSet\nval kafkaParams \u003d Map[String, String](\"metadata.broker.list\" -\u003e \"localhost:9092\",\"auto.offset.reset\" -\u003e \"smallest\",\"group.id\"-\u003e\"zeppelin-consumer-3\")\nval messages \u003d KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)\nmessages.print()\nssc.start\nssc.awaitTermination\n",
+      "dateUpdated": "Jun 29, 2016 10:55:43 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215188614_-2131844042",
+      "id": "20160629-154628_1380113514",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import kafka.serializer.StringDecoder\nimport org.apache.spark.streaming._\nimport org.apache.spark.streaming.kafka._\nssc: org.apache.spark.streaming.StreamingContext \u003d org.apache.spark.streaming.StreamingContext@75695ceb\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:46:28 PM",
+      "dateStarted": "Jun 29, 2016 8:23:26 PM",
+      "dateFinished": "Jun 29, 2016 8:24:00 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nval topicsSet \u003d Array(\"spark-stream\").toSet\nval kafkaParams \u003d Map[String, String](\"metadata.broker.list\" -\u003e \"localhost:9092\",\"auto.offset.reset\" -\u003e \"smallest\",\"group.id\"-\u003e\"zeppelin-consumer-3\")\nval messages \u003d KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)\nmessages.print()\nssc.start\nssc.awaitTermination\n\n",
+      "dateUpdated": "Jun 29, 2016 6:28:43 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215515986_-93602545",
+      "id": "20160629-155155_514161685",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "java.lang.IllegalStateException: SparkContext has been shutdown\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1824)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1845)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1858)\n\tat org.apache.spark.SparkContext.runJob(SparkContext.scala:1929)\n\tat org.apache.spark.rdd.RDD$$anonfun$collect$1.apply(RDD.scala:927)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:150)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:111)\n\tat org.apache.spark.rdd.RDD.withScope(RDD.scala:316)\n\tat org.apache.spark.rdd.RDD.collect(RDD.scala:926)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$anonfun$1.apply(\u003cconsole\u003e:62)\n\tat $iwC$$iwC$$iwC$$iwC$$iwC$$$$93297bcd59dca476dd569cf51abed168$$$$$$iwC$$iwC$$iwC$$iwC$$iwC$$iwC$$anonfun$1.apply(\u003cconsole\u003e:62)\n\tat org.apache.spark.streaming.dstream.DStream$$anonfun$foreachRDD$1$$anonfun$apply$mcV$sp$3.apply(DStream.scala:661)\n\tat org.apache.spark.streaming.dstream.DStream$$anonfun$foreachRDD$1$$anonfun$apply$mcV$sp$3.apply(DStream.scala:661)\n\tat org.apache.spark.streaming.dstream.ForEachDStream$$anonfun$1$$anonfun$apply$mcV$sp$1.apply$mcV$sp(ForEachDStream.scala:50)\n\tat org.apache.spark.streaming.dstream.ForEachDStream$$anonfun$1$$anonfun$apply$mcV$sp$1.apply(ForEachDStream.scala:50)\n\tat org.apache.spark.streaming.dstream.ForEachDStream$$anonfun$1$$anonfun$apply$mcV$sp$1.apply(ForEachDStream.scala:50)\n\tat org.apache.spark.streaming.dstream.DStream.createRDDWithLocalProperties(DStream.scala:426)\n\tat org.apache.spark.streaming.dstream.ForEachDStream$$anonfun$1.apply$mcV$sp(ForEachDStream.scala:49)\n\tat org.apache.spark.streaming.dstream.ForEachDStream$$anonfun$1.apply(ForEachDStream.scala:49)\n\tat org.apache.spark.streaming.dstream.ForEachDStream$$anonfun$1.apply(ForEachDStream.scala:49)\n\tat scala.util.Try$.apply(Try.scala:161)\n\tat org.apache.spark.streaming.scheduler.Job.run(Job.scala:39)\n\tat org.apache.spark.streaming.scheduler.JobScheduler$JobHandler$$anonfun$run$1.apply$mcV$sp(JobScheduler.scala:224)\n\tat org.apache.spark.streaming.scheduler.JobScheduler$JobHandler$$anonfun$run$1.apply(JobScheduler.scala:224)\n\tat org.apache.spark.streaming.scheduler.JobScheduler$JobHandler$$anonfun$run$1.apply(JobScheduler.scala:224)\n\tat scala.util.DynamicVariable.withValue(DynamicVariable.scala:57)\n\tat org.apache.spark.streaming.scheduler.JobScheduler$JobHandler.run(JobScheduler.scala:223)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)\n\tat java.lang.Thread.run(Thread.java:745)\n\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:51:55 PM",
+      "dateStarted": "Jun 29, 2016 6:28:43 PM",
+      "dateFinished": "Jun 29, 2016 5:53:32 PM",
+      "status": "ABORT",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "ssc.stop(true)",
+      "dateUpdated": "Jun 29, 2016 6:31:16 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467217959900_710140370",
+      "id": "20160629-163239_858768978",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Jun 29, 2016 4:32:39 PM",
+      "dateStarted": "Jun 29, 2016 5:53:36 PM",
+      "dateFinished": "Jun 29, 2016 5:53:36 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval topicMap \u003d Map(\"spark-stream\" -\u003e 1)\nval kafkaStream \u003d KafkaUtils.createStream(ssc, \"0.0.0.0:2181\", \"zepplin-consumer-2\", topicMap)\nkafkaStream.print\nssc.start\nssc.awaitTermination\n/*.map(_._2).foreachRDD(rdd \u003d\u003e {val data \u003d rdd.collect().mkString(\"\\n\")\n  println(data)\n})*/",
+      "dateUpdated": "Jun 29, 2016 8:24:26 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467219728280_-2110344903",
+      "id": "20160629-170208_705453014",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "topicMap: scala.collection.immutable.Map[String,Int] \u003d Map(spark-stream -\u003e 1)\nkafkaStream: org.apache.spark.streaming.dstream.ReceiverInputDStream[(String, String)] \u003d org.apache.spark.streaming.kafka.KafkaInputDStream@54ce84cb\n"
+      },
+      "dateCreated": "Jun 29, 2016 5:02:08 PM",
+      "dateStarted": "Jun 29, 2016 8:24:26 PM",
+      "dateFinished": "Jun 29, 2016 6:19:58 PM",
+      "status": "ABORT",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nval topicsSet \u003d Array(\"spark-stream\").toSet\nval kafkaParams \u003d Map[String, String](\"metadata.broker.list\" -\u003e \"localhost:9092\",\"auto.offset.reset\" -\u003e \"smallest\",\"group.id\"-\u003e\"zeppelin-consumer-3\")\nval messages \u003d KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)\n",
+      "dateUpdated": "Jun 29, 2016 6:14:02 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467218122075_-1154490717",
+      "id": "20160629-163522_1063744273",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Jun 29, 2016 4:35:22 PM",
+      "dateStarted": "Jun 29, 2016 4:43:07 PM",
+      "dateFinished": "Jun 29, 2016 4:43:07 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nssc.stop(true)",
+      "dateUpdated": "Jun 29, 2016 8:24:49 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215805418_-1839022246",
+      "id": "20160629-155645_1285117882",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "\u003cconsole\u003e:41: error: ambiguous reference to overloaded definition,\nboth method stop in class StreamingContext of type (stopSparkContext: Boolean, stopGracefully: Boolean)Unit\nand  method stop in class StreamingContext of type (stopSparkContext: Boolean)Unit\nmatch expected type ?\n              ssc.stop\n                  ^\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:56:45 PM",
+      "dateStarted": "Jun 29, 2016 4:12:25 PM",
+      "dateFinished": "Jun 29, 2016 3:59:45 PM",
+      "status": "ABORT",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark \nimport kafka.serializer.DefaultDecoder\n",
+      "dateUpdated": "Jun 29, 2016 6:26:17 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467215985403_-1587687625",
+      "id": "20160629-155945_1207848952",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "\u003cconsole\u003e:33: error: object serializer is not a member of package org.apache.spark.streaming.kafka\n         import kafka.serializer.DefaultDecoder\n                      ^\n"
+      },
+      "dateCreated": "Jun 29, 2016 3:59:45 PM",
+      "dateStarted": "Jun 29, 2016 6:26:18 PM",
+      "dateFinished": "Jun 29, 2016 6:26:18 PM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark ",
+      "dateUpdated": "Jun 29, 2016 6:26:17 PM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1467224777899_1076950494",
+      "id": "20160629-182617_881621080",
+      "dateCreated": "Jun 29, 2016 6:26:17 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Kafka Streaming",
+  "id": "2BQYP256A",
+  "lastReplName": {
+    "value": "spark"
+  },
+  "angularObjects": {
+    "2BPD1HKW5:shared_process": [],
+    "2BNEE3167:shared_process": [],
+    "2BRR5KF23:shared_process": [],
+    "2BS7YGAZY:shared_process": [],
+    "2BQR8HZPR:shared_process": [],
+    "2BPD1GK2C:shared_process": [],
+    "2BRWJMAKB:shared_process": [],
+    "2BPFVUTJ2:shared_process": [],
+    "2BQJ5KDCJ:shared_process": [],
+    "2BQVP2FCD:shared_process": [],
+    "2BR4KNY39:shared_process": [],
+    "2BRA7CEHG:shared_process": [],
+    "2BQYE2E4E:shared_process": [],
+    "2BNQ53BUY:shared_process": [],
+    "2BRDBRUJG:shared_process": [],
+    "2BP4TTCS5:shared_process": [],
+    "2BQKWUU6Y:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}
