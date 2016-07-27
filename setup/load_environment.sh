@@ -1,7 +1,7 @@
 export SPARK_HOME="/home/vagrant/spark-1.6.2-bin-hadoop2.6"
 export ZEPPELIN_HOME="/home/vagrant/zeppelin-0.6.0-bin-all"
 export KAFKA_HOME="/home/vagrant/kafka_2.10-0.8.2.1"
-export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64/jre/"
+export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64/"
 export HADOOP_PREFIX="/home/vagrant/hadoop-2.6.0"
 export HADOOP_HOME=$HADOOP_PREFIX
 export HADOOP_COMMON_HOME=$HADOOP_PREFIX
